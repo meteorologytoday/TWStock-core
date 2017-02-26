@@ -24,21 +24,38 @@ if in_dir is None:
 	sys.exit(2)
 
 all_data = read_data.read_data(in_dir)
-
+buy = []
+sell = []
 for stockno, data in all_data.items():
 	if len(data[0]) == 0:
 		print("Stock %s is empty, continue to next." % (stockno,))
 		continue
 
-	if int(stockno) != 2301:
-		continue
+#	if int(stockno) != 2301:
+#		continue
 
 	w = StockWiz(data[1])
+	"""
 	print("stocknumber: %s" % (stockno, ))
 	print(data[1])
 	print("EMA")
-	print(w.ema(10))
-	print(w.dif())
-	print(w.macd())
+	print(w.ema(12))
+	print("dif")
+	print(w.dif()[-20:])
+	print("macd")
+	print(w.macd()[-20:])
+
+	"""
+	sig = w.fastSlowCrx()
+	if sig == 1:
+		buy.append(stockno)
+	elif sig == -1:
+		sell.append(stockno)
+
+print("sell:")
+print(sell)
+
+print("buy:")
+print(buy)
 
 #print(sorted(all_data.keys()))

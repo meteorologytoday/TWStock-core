@@ -13,7 +13,7 @@ class StockWiz:
 		ema = np.zeros(len(data))
 		ema[0] = data[0]
 		for i in range(1, len(data)):
-			ema[i] = ema[i-1] * (1 - smooth) + data[i] * smooth
+			ema[i] = ema[i-1] + (data[i] - ema[i-1]) * smooth
 		
 		return ema
 
@@ -22,3 +22,22 @@ class StockWiz:
 
 	def macd(self, days=9):	
 		return self.ema(days, self.dif())
+
+	
+	def fastSlowCrx(self, detect_days=1):
+		if detect_days <= 0:
+			error('detect_days must be positive integer.')
+	
+		tmp = self.dif() - self.macd()
+		n = len(tmp) - 1
+		# element 0 correspond to the latest day, 1 the previous one day, and so on
+		signal = np.zeros(detect_days)
+		
+		for day_shift in range(0, detect_days):
+			current = n - day_shift
+			if tmp[current -1] < 0 and tmp[current] >= 0:
+				signal[day_shift] = 1
+			elif tmp[current -1] >= 0 and tmp[current] < 0:
+				signal[day_shift] = -1
+
+		return signal if detect_days > 1 else signal[0]
