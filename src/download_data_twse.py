@@ -108,7 +108,9 @@ with open(sys.argv[1], 'r') as target_file:
 				)
 				next(stock_reader)
 				next(stock_reader)
+
 				for row in stock_reader:
+					print(row)
 					if row['date'] == '查無資料！' or row['date'] is None:
 						break
 	
