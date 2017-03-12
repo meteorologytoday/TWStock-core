@@ -1,34 +1,9 @@
 import sqlite3
+import Share
+from StockException import *
 
-cols = [
-	'no',
-	'date',
-	'vol',
-	'turnover',
-	'o_p',
-	'h_p',
-	'l_p',
-	'c_p',
-	'change_spread',
-	'count'
-]
-
-sel_cols = [
-	'no',
-	'date',
-	'vol',
-	'turnover',
-	'o_p',
-	'h_p',
-	'l_p',
-	'c_p',
-	'change_spread',
-	'count'
-]
-
-
-ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(cols)+ ') VALUES (:' + ',:'.join(cols) + ')'
-sel_cmd = 'SELECT ' + ','.join(sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date desc'
+ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(Share.cols)+ ') VALUES (:' + ',:'.join(Share.cols) + ')'
+sel_cmd = 'SELECT ' + ','.join(Share.sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date desc'
 
 class StockDownloader:
 
@@ -66,7 +41,6 @@ class StockDownloader:
 
 	def writeDB(self, data):
 		for row in data:
-			print("going to insert")
 			self.dbh.execute(ins_cmd, row)
 			self.dbh.commit()
 
@@ -74,18 +48,18 @@ class StockDownloader:
 		self.valid_targets = []
 		self.error_targets = []
 
-	def addValidTarget(self, stockno):
-		self.valid_targets.append(stockno)
+	def addValidTarget(self, stockno, name):
+		self.valid_targets.append([stockno, name])
 
 	def addErrorTarget(self, stockno, desc):
 		self.error_targets.append([stockno, desc])
 
-	def printTargets(self, prefix):
-		with open("%s_valid_targets.csv" % (prefix, ), 'w') as f:
-			for stockno in self.valid_targets:
-				f.write("%s,\n" % (stockno,))
+	def printTargets(self, prefix, targets_dir='./'):
+		with open("%s/%s_valid_targets.csv" % (targets_dir, prefix, ), 'w') as f:
+			for target in self.valid_targets:
+				f.write("%s,\"%s\"\n" % (target[0],target[1]))
 
-		with open("%s_error_targets.csv" % (prefix, ), 'w') as f:
+		with open("%s/%s_error_targets.csv" % (targets_dir, prefix, ), 'w') as f:
 			for stock in self.error_targets:
 				f.write("%s, %s\n" % (stock[0], stock[1]))
 
@@ -124,17 +98,18 @@ class StockReader:
 	def disconnectDB(self):
 		self.dbh.close()
 
-	def readDB(self, no):
-
+	def readStockByNo(self, no):
 		result = {}
 
 		tmp = list(zip(* self.dbh.execute(sel_cmd, (no, )).fetchall()))
 		if len(tmp) != 0:
-			for i, key in enumerate(cols):
+			for i, key in enumerate(Share.sel_cols):
 				result[key] = tmp[i]
 			return result
 
 		else:
-			raise Exception("No data is available")
+			raise NoStockDataException("No data is available")
 
+	def getListOfNo(self):
+		return list(zip(*self.dbh.execute('''SELECT no FROM stocks GROUP BY no ORDER BY no ASC''').fetchall()))[0]
 

@@ -1,4 +1,4 @@
-from Stock import StockDownloader
+from StockIO import StockDownloader
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
@@ -70,7 +70,6 @@ class TWSEDownloader(StockDownloader):
 		req_times = []
 		
 		for i in range(0, kwargs['months']):
-			i = 11 - i
 			y, m = prevMonth(now.year, now.month, i)
 			req_times.append(datetime.datetime(y, m, 1))
 
@@ -80,12 +79,14 @@ class TWSEDownloader(StockDownloader):
 				name = stock['name']
 				stockno = stock['stockno']
 				data = []
+				err = []
 				for req_time in req_times:
-					print("收集股市資料(編號%s), %04d年%02d月" % (stockno, req_time.year, req_time.month))
+					print("收集[%s]資料(編號%s), %04d年%02d月" % (name, stockno, req_time.year, req_time.month))
 
 					retrieved = fetch_data(stockno, req_time)
 					if retrieved is None:
 						print("錯誤發生，跳過！")
+						err.append('fetch_data')
 						continue
 
 					with StringIO(fetch_data(stockno, req_time)) as pseudofile:
@@ -93,21 +94,24 @@ class TWSEDownloader(StockDownloader):
 							pseudofile,
 							cvs_data_cols
 						)
-
+						
+						stock_name = 'Unknown'
 						try:
-							next(stock_reader)
+							stock_name = next(stock_reader)['date'].split()[1]
 							next(stock_reader)
 						except StopIteration:
 							print("讀取CSV時錯誤發生，跳過！")
+							err.append('csv')
 							continue
 							
 
 						for row in stock_reader:
 							if row['date'] == '查無資料！' or row['date'] is None:
 								print("查無資料，跳過！")
+								err.append('empty')
 								break
 	
-							tmp = row['date'].split('/')
+							tmp = row['date'][0:9].split('/')
 							row['date'] = "%04d-%02d-%02d" % (int(tmp[0])+1911, int(tmp[1]), int(tmp[2]))
 
 							row['no'] = stockno
@@ -115,5 +119,11 @@ class TWSEDownloader(StockDownloader):
 							row['turnover'] = row['turnover'].replace(',','') 	
 							row['count'] = row['count'].replace(',','') 	
 							data.append(row)
-				print("** 寫入資料庫")
+
+				if len(err) == 0:
+					print(stock_name)
+					self.addValidTarget(stockno, stock_name)
+				else:
+					self.addErrorTarget(stockno, ';'.join(err))
+
 				self.writeDB(data)

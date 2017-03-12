@@ -1,13 +1,16 @@
 import numpy as np
+import Share
 
-class StockWiz:
-	def __init__(self, stock):
-		self.stock = stock.copy()
-
+class StockLine:
+	def __init__(self, datum, no='Unknown'):
+		self.no = no
+		self.d = {}
+		for key in Share.sel_cols:
+			self.d[key] = list(datum[key])
 
 	def ema(self, days, data=None):
 		if data is None:
-			data = self.stock
+			data = self.c_p
 
 		smooth = 2.0 / (1.0 + days)
 		ema = np.zeros(len(data))
