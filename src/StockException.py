@@ -1,2 +1,0 @@
-class NoStockDataException(Exception):
-	pass
