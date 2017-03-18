@@ -6,7 +6,7 @@ import numpy as np
 
 from StockIO import StockReader
 from StockLine import StockLine
-from StockException import *
+from TWSException import *
 
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "", ["database="])

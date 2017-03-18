@@ -1,6 +1,6 @@
 import sqlite3
 import Share
-from StockException import *
+from TWSException import *
 
 ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(Share.cols)+ ') VALUES (:' + ',:'.join(Share.cols) + ')'
 sel_cmd = 'SELECT ' + ','.join(Share.sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date desc'
