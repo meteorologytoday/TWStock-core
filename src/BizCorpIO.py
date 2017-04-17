@@ -68,8 +68,9 @@ class BizCorpReader:
 
 		tmp = list(zip(* self.dbh.execute(sel_cmd, (no, )).fetchall()))
 		if len(tmp) != 0:
-			for i, key in enumerate(BizCorpShare.sel_cols):
-				result[key] = tmp[i]
+			result = Timeseries(tmp[0]) # 'date' column
+			for i, key in enumerate(BizCorpShare.sel_cols[1:]):
+				result.add(key, tmp[i])
 			return result
 
 		else:

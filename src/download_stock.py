@@ -1,7 +1,7 @@
 import sys, getopt
 import datetime
-from TWSEDownloader import TWSEDownloader
-from TPEXDownloader import TPEXDownloader
+from TWSEStockDownloader import TWSEStockDownloader
+from TPEXStockDownloader import TPEXStockDownloader
 
 now = datetime.date.today()
 
@@ -11,6 +11,8 @@ tpex_file = 'targets.csv'
 db_file = "STOCK.db"
 scan = False
 targets_dir = 'targets'
+
+beg_t = datetime.datetime.now().timestamp()
 
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "TWSE=", "TPEX=", "scan", "targets-dir=", "marker="])
@@ -40,15 +42,20 @@ print("TWSE input file: %s" % (twse_file,))
 print("Targets directory: %s" % (targets_dir,))
 print("MARKER : %s" % (marker,))
 
-with TWSEDownloader(db_file) as handler:
-	handler.download(months=months, targets="%s/%s" % (targets_dir, twse_file))
-	if scan:
-		handler.printTargets('TWSE%s' % (marker,), targets_dir=targets_dir)
+if not scan:
+	with TWSEStockDownloader(db_file) as handler:
+		handler.download(months=months, targets="%s/%s" % (targets_dir, twse_file))
 
-
-with TPEXDownloader(db_file) as handler:
-	handler.download(months=months, targets="%s/%s" % (targets_dir, tpex_file))
-	if scan:
+	with TPEXStockDownloader(db_file) as handler:
+		handler.download(months=months, targets="%s/%s" % (targets_dir, tpex_file))
+else:
+	leftover = None
+	with TWSEStockDownloader(db_file) as handler:
+		handler.download(months=months, targets="%s/%s" % (targets_dir, twse_file))
+		_, leftover = handler.printTargets('TWSE%s' % (marker,), targets_dir=targets_dir)
+	with TPEXStockDownloader(db_file) as handler:
+		handler.download(months=months, targets=leftover)
 		handler.printTargets('TPEX%s' % (marker,), targets_dir=targets_dir)
 
 print("下載完成！")
+print("共費時%d秒" % (int(datetime.datetime.now().timestamp() - beg_t),))

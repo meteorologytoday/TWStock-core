@@ -9,6 +9,12 @@ import time
 HOST = "http://www.tpex.org.tw/"
 cvs_data_cols = ['date', 'vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
 
+strip = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
+
+def stripcma(s):
+	return s.replace(',', '')
+
+
 def prevMonth(year, month, dmonth):
 	"""
 		One base: 1 = Jan, 2 = Feb, ..., 12 = Dec.
@@ -54,7 +60,7 @@ def fetch_data(stockno, req_time):
 	return data
 
 
-class TPEXDownloader(StockDownloader):
+class TPEXStockDownloader(StockDownloader):
 	def __init__(self, db_fname):
 		super().__init__(db_fname)
 
@@ -118,11 +124,14 @@ class TPEXDownloader(StockDownloader):
 
 
 							tmp = row['date'][0:9].split('/')
-							row['date'] = "%04d-%02d-%02d" % (int(tmp[0])+1911, int(tmp[1]), int(tmp[2]))
+							row['date'] = int(datetime.datetime(int(tmp[0])+1911, int(tmp[1]), int(tmp[2])).timestamp())
 							row['no'] = stockno
-							row['vol'] = int(row['vol'].replace(',',''))*1000
-							row['turnover'] = int(row['turnover'].replace(',',''))*1000
-							row['count'] = row['count'].replace(',','')
+			
+							row['change_spread'] = row['change_spread'].replace('X', '')
+							for key in strip:
+								row[key] = float(stripcma(row[key]))
+							
+
 							data.append(row)
 
 				if len(err) == 0:

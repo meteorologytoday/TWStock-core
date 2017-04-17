@@ -1,32 +1,17 @@
 import numpy as np
-import Share
+import StockShare
+import Timeseries
+from MathFuncs import *
 
-class StockLine:
-	def __init__(self, datum, no='Unknown'):
-		self.no = no
-		self.d = {}
-		for key in Share.sel_cols:
-			self.d[key] = list(datum[key])
 
-	def ema(self, days, data=None):
-		if data is None:
-			data = self.c_p
-
-		smooth = 2.0 / (1.0 + days)
-		ema = np.zeros(len(data))
-		ema[0] = data[0]
-		for i in range(1, len(data)):
-			ema[i] = ema[i-1] + (data[i] - ema[i-1]) * smooth
-		
-		return ema
-
-	def dif(self, s=12, l=26):
-		return self.ema(s) - self.ema(l)
-
-	def macd(self, days=9):	
-		return self.ema(days, self.dif())
-
+class StockAnalyzer:
+	def __init__(self, ts):
+		self.ts = ts
 	
+	def macd(data, days=9):
+		return ema(self.ts.d['c_p'], days)
+
+"""
 	def fastSlowCrx(self, detect_days=1):
 		if detect_days <= 0:
 			error('detect_days must be positive integer.')
@@ -44,3 +29,4 @@ class StockLine:
 				signal[day_shift] = -1
 
 		return signal if detect_days > 1 else signal[0]
+"""

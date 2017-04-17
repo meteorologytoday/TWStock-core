@@ -1,9 +1,11 @@
 import sqlite3
-import Share
+import StockShare
 from TWSException import *
+from Timeseries import Timeseries
 
-ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(Share.cols)+ ') VALUES (:' + ',:'.join(Share.cols) + ')'
-sel_cmd = 'SELECT ' + ','.join(Share.sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date desc'
+
+ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(StockShare.cols)+ ') VALUES (:' + ',:'.join(StockShare.cols) + ')'
+sel_cmd = 'SELECT ' + ','.join(StockShare.sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date desc'
 
 class StockDownloader:
 
@@ -25,15 +27,15 @@ class StockDownloader:
 		c.execute('''CREATE TABLE IF NOT EXISTS stocks (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			no TEXT,
-			date TEXT,
-			vol INTEGER,
-			turnover INTEGER,
+			date INTEGER,
+			vol REAL,
+			turnover REAL,
 			o_p REAL,
 			h_p REAL,
 			l_p REAL,
 			c_p REAL,
 			change_spread REAL,
-			count INTEGER,
+			count REAL,
 			UNIQUE(date, no)
 		)''')
 		c.commit()
@@ -55,15 +57,17 @@ class StockDownloader:
 		self.error_targets.append([stockno, desc])
 
 	def printTargets(self, prefix, targets_dir='./'):
-		with open("%s/%s_valid_targets.csv" % (targets_dir, prefix, ), 'w') as f:
+		valid_name = "%s/%s_valid_targets.csv" % (targets_dir, prefix, )
+		error_name = "%s/%s_error_targets.csv" % (targets_dir, prefix, )
+		with open(valid_name, 'w') as f:
 			for target in self.valid_targets:
 				f.write("%s,\"%s\"\n" % (target[0],target[1]))
 
-		with open("%s/%s_error_targets.csv" % (targets_dir, prefix, ), 'w') as f:
+		with open(error_name, 'w') as f:
 			for stock in self.error_targets:
 				f.write("%s, %s\n" % (stock[0], stock[1]))
 
-
+		return valid_name, error_name
 		
 
 	def download(self, **kwargs):
@@ -98,13 +102,13 @@ class StockReader:
 	def disconnectDB(self):
 		self.dbh.close()
 
-	def readStockByNo(self, no):
-		result = {}
-
+	def readByNo(self, no):
 		tmp = list(zip(* self.dbh.execute(sel_cmd, (no, )).fetchall()))
 		if len(tmp) != 0:
-			for i, key in enumerate(Share.sel_cols):
-				result[key] = tmp[i]
+			result = Timeseries(tmp[0]) # 'date' column
+			tmp
+			for i, key in enumerate(StockShare.sel_cols[1:]):
+				result.add(key, tmp[i+1])
 			return result
 
 		else:

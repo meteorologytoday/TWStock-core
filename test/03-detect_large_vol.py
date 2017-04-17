@@ -32,6 +32,7 @@ datum = []
 
 for company in companies:
 	data = None
+	print(company)
 	try:
 		data = StRdr.readByNo(company)
 	except NoDataException:
@@ -44,7 +45,6 @@ over100 = []
 
 for data in datum:
 	company, ts = data[0], data[1]
-	print("COMPANY: %s" % (company,))
 	vol = ts.d['vol']
 	if len(vol) < 3:
 		continue
@@ -55,5 +55,10 @@ for data in datum:
 		print("%s : %d" % (company, int(avg),))
 		over100.append(data)
 
+for data in over100:
+	np.
+
 print("Done loading %d stocks." % (len(datum),))
 print("There are %d stocks over 1000 vol in the past 3 days" % (len(over100),))
+
+
