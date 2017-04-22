@@ -15,8 +15,18 @@ class Timeseries:
 
 		self.d[key] = np.array(arr, dtype=float)
 
-	def addByTime(keys, arrs, time):
+	def addByTimeDict(self, keyarrs, time):
+		keys, arrs = list(zip(*keyarrs.items()))
+		self.addByTime(keys,arrs,time)
+
+	def addByTime(self, keys, arrs, time):
 		"""
+			This function add new data into timeseries. It first compare
+			[time] with its own time points. The matched data will be stored,
+			while the mismatched ones will be discarded. Missing data will
+			be inserted as [Timeseries.missing]. If the key overlaps with
+			original stored keys, new data overwrites.
+
 			# keys
 
 			# arrs
@@ -59,3 +69,17 @@ class Timeseries:
 
 	def __len__(self):
 		return len(self.time)
+
+	def print(self, filename):
+		keys = list(self.d.keys())
+		with open(filename, 'w') as f:
+			f.write("# time ")
+			for i in range(len(keys)):
+				f.write("%s " % (keys[i],))
+			f.write("\n")
+
+			for i in range(len(self.time)):
+				f.write("%f " % (self.time[i]))
+				for key in keys:
+					f.write("%f " % (self.d[key][i]))
+				f.write("\n")

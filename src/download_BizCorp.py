@@ -9,10 +9,11 @@ beg_t = datetime.datetime.now().timestamp()
 db_file = "STOCK.db"
 twse = False
 tpex = False
+days = 10
 
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "TWSE", "TPEX"])
+	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "TWSE", "TPEX", "days="])
 except getopt.GetoptError as err:
 	print(err)
 	sys.exit(2)
@@ -24,8 +25,10 @@ for o, a in opts:
 		twse = True
 	elif o == "--TPEX":
 		tpex = True
+	elif o == "--days":
+		days = int(a)
 
-days = 10
+
 
 print("資料庫檔案：%s" % (db_file,))
 print("追溯時間： %d 日" % (days,))
@@ -40,6 +43,7 @@ if twse:
 if tpex:
 	with TPEXBizCorpDownloader(db_file) as handler:
 		handler.download(days=days)
+
 end_t = datetime.datetime.now().timestamp()
 print("下載完成！")
 print("花費時間：%.1f 分鐘" % (float(end_t - beg_t) / 60.0,))

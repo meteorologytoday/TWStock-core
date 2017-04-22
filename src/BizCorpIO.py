@@ -1,5 +1,6 @@
 import sqlite3
 import BizCorpShare
+from Timeseries import Timeseries
 from TWSException import *
 
 ins_cmd = 'INSERT OR IGNORE INTO ' + BizCorpShare.table_name + '(' + ','.join(BizCorpShare.ins_cols)+ ') VALUES (:' + ',:'.join(BizCorpShare.ins_cols) + ')'
