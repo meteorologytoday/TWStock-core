@@ -4,10 +4,10 @@ PY=python3
 
 pid=""
 
-$PY $TWSEStockPATH/src/download_Stock.py --TPEX=TPEX_SCAN_valid_targets.csv --TWSE=TWSE_SCAN_valid_targets.csv --targets-dir=targets >> log_download_stock &
+$PY $TWSEStockPATH/src/download_Stock.py --TPEX=TPEX_SCAN_valid_targets.csv --TWSE=TWSE_SCAN_valid_targets.csv --targets-dir=targets --months=1 >> log_download_stock &
 pid="$pid $!"
 
-$PY $TWSEStockPATH/src/download_BizCorp.py --TPEX --TWSE >> log_download_bizcorp &
+$PY $TWSEStockPATH/src/download_BizCorp.py --TPEX --TWSE --days=22 >> log_download_bizcorp &
 pid="$pid $!"
 
 

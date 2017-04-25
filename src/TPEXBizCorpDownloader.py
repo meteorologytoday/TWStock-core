@@ -61,7 +61,7 @@ class TPEXBizCorpDownloader(BizCorpDownloader):
 		if kwargs.get('days') is None:
 			kwargs['days'] = 60
 
-		today = int(datetime.datetime.today().timestamp() / 86400) * 86400
+		today = int(datetime.datetime.utcnow().timestamp() / 86400.0 ) * 86400
 		req_times = [today - 86400*i for i in range(0, kwargs['days'])]
 		
 		for req_time in req_times:
@@ -69,7 +69,7 @@ class TPEXBizCorpDownloader(BizCorpDownloader):
 			err = []
 
 			timestamp = req_time
-			req_time = datetime.datetime.fromtimestamp(req_time)
+			req_time = datetime.datetime.fromtimestamp(req_time, tz=datetime.timezone.utc)
 
 			print("收集TPEX%04d年%02d月%02d日三大法人資料" % (req_time.year, req_time.month, req_time.day))
 
@@ -99,6 +99,7 @@ class TPEXBizCorpDownloader(BizCorpDownloader):
 					for key in strip:
 						row[key] = float(stripcma(row[key]))
 
+					row['no'] = row['no'].strip()
 					data.append(row)
 					
 				if len(err) != 0:

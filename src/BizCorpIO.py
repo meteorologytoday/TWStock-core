@@ -4,7 +4,7 @@ from Timeseries import Timeseries
 from TWSException import *
 
 ins_cmd = 'INSERT OR IGNORE INTO ' + BizCorpShare.table_name + '(' + ','.join(BizCorpShare.ins_cols)+ ') VALUES (:' + ',:'.join(BizCorpShare.ins_cols) + ')'
-sel_cmd = 'SELECT ' + ','.join(BizCorpShare.sel_cols) + ' FROM ' + BizCorpShare.table_name + ' WHERE no = ? ORDER BY date desc'
+sel_cmd = 'SELECT ' + ','.join(BizCorpShare.sel_cols) + ' FROM ' + BizCorpShare.table_name + ' WHERE no = ? ORDER BY date ASC'
 create_cmd = 'CREATE TABLE IF NOT EXISTS ' + BizCorpShare.table_name \
 	+ ' (' + (','.join(BizCorpShare.create_cols)) \
 	+ ', UNIQUE(' + (','.join(BizCorpShare.uniq)) + ') )'
@@ -69,7 +69,7 @@ class BizCorpReader:
 
 		tmp = list(zip(* self.dbh.execute(sel_cmd, (no, )).fetchall()))
 		if len(tmp) != 0:
-			result = Timeseries(tmp[0]) # 'date' column
+			result = Timeseries(tmp.pop(0)) # 'date' column
 			for i, key in enumerate(BizCorpShare.sel_cols[1:]):
 				result.add(key, tmp[i])
 			return result

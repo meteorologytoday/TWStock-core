@@ -11,11 +11,12 @@ tpex_file = 'targets.csv'
 db_file = "STOCK.db"
 scan = False
 targets_dir = 'targets'
+months = 12
 
 beg_t = datetime.datetime.now().timestamp()
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "TWSE=", "TPEX=", "scan", "targets-dir=", "marker="])
+	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "TWSE=", "TPEX=", "scan", "targets-dir=", "marker=", "months="])
 except getopt.GetoptError as err:
 	print(err)
 	sys.exit(2)
@@ -33,8 +34,11 @@ for o, a in opts:
 		scan = True
 	elif o == "--marker":
 		marker = a
+	elif o == "--months":
+		months = int(a)
 
-months = 12 if not scan else 1
+if scan:
+	months = 1
 
 print("DATABASE   file: %s" % (db_file,))
 print("TPEX input file: %s" % (tpex_file,))

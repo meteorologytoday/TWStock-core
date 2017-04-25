@@ -4,7 +4,7 @@ class Timeseries:
 	"""
 		Variable [time] is assumed to be ascending.
 	"""
-	def __init__(self, time, missing=-999):
+	def __init__(self, time, missing=-99999):
 		self.time = np.array(time)
 		self.missing = missing
 		self.d = {}
@@ -36,21 +36,24 @@ class Timeseries:
 				[time] is assumed to be ascending for performance
 
 		"""
+		if len(keys) != len(arrs):
+			print("ERROR! Length of keys must match length of arrs")
+			return	
+	
 
-		mapping = [None for _ in time]
+		# i-th element maps to mapping[i]-th element in arrs
+		mapping = [None for _ in self.time]
 
 		run_i = 0
-		len_time = len(time)
-
 		# Find insertion position
-		for i in range(0, len_time):
+		for i in range(len(self.time)):
 			try:
-				while time[i] > self.time[run_i]:
+				while self.time[i] > time[run_i]:
 					run_i += 1
 			except IndexError:
 				break
 			
-			if time[i] == self.time[run_i]:
+			if time[run_i] == self.time[i]:
 				mapping[i] = run_i
 
 		for i in range(0,len(keys)):
@@ -70,8 +73,10 @@ class Timeseries:
 	def __len__(self):
 		return len(self.time)
 
-	def print(self, filename):
-		keys = list(self.d.keys())
+	def print(self, filename, keys=None):
+		if keys is None:
+			keys = list(self.d.keys())
+		
 		with open(filename, 'w') as f:
 			f.write("# time ")
 			for i in range(len(keys)):
@@ -81,5 +86,10 @@ class Timeseries:
 			for i in range(len(self.time)):
 				f.write("%f " % (self.time[i]))
 				for key in keys:
-					f.write("%f " % (self.d[key][i]))
+					val = self.d[key][i]
+
+					if val == self.missing:
+						f.write("? ")
+					else:
+						f.write("%f " % (self.d[key][i]))
 				f.write("\n")

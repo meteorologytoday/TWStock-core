@@ -5,7 +5,7 @@ from Timeseries import Timeseries
 
 
 ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(StockShare.cols)+ ') VALUES (:' + ',:'.join(StockShare.cols) + ')'
-sel_cmd = 'SELECT ' + ','.join(StockShare.sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date desc'
+sel_cmd = 'SELECT ' + ','.join(StockShare.sel_cols) + ' FROM stocks WHERE no = ? ORDER BY date ASC'
 
 class StockDownloader:
 

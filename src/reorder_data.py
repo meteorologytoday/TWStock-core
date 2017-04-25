@@ -38,11 +38,14 @@ with BizCorpReader(db_file) as reader:
 		bizcorps[stock_symbol] = reader.readByNo(stock_symbol)
 
 
+
+
 bizcorp_keys = bizcorps.keys()
 for stock_symbol, stock  in stocks.items():
 	if stock_symbol in bizcorp_keys:
 		bizcorp = bizcorps[stock_symbol]
 		stock.addByTimeDict(bizcorp.d, bizcorp.time)
 
-stocks['1101'].print('1101.txt')
+print(stocks['1101'].d['foreign_o'])
+stocks['1101'].print('1101.txt', ['dealer_self_i', 'foreign_i'])
 	

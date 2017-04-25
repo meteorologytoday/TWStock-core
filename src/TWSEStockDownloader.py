@@ -77,7 +77,7 @@ class TWSEStockDownloader(StockDownloader):
 		
 		for i in range(0, kwargs['months']):
 			y, m = prevMonth(now.year, now.month, i)
-			req_times.append(datetime.datetime(y, m, 1))
+			req_times.append(datetime.datetime(y, m, 1, tzinfo=datetime.timezone.utc))
 
 		
 		with open(kwargs['targets'], 'r') as target_file:
@@ -117,8 +117,14 @@ class TWSEStockDownloader(StockDownloader):
 								err.append('empty')
 								break
 	
+							# 不明原因沒有開盤價，跳過這筆
+							if row['o_p'] == '--' or row['o_p'] == '0.00':
+								print("%s 資料有異開盤內容為'%s'，跳過！" % (row['date'],row['o_p']))
+								continue							
+
+
 							tmp = row['date'][0:9].split('/')
-							row['date'] = int(datetime.datetime(int(tmp[0])+1911, int(tmp[1]), int(tmp[2])).timestamp())
+							row['date'] = int(datetime.datetime(int(tmp[0])+1911, int(tmp[1]), int(tmp[2]), tzinfo=datetime.timezone.utc).timestamp())
 
 							row['no'] = stockno
 							
