@@ -121,19 +121,25 @@ class TPEXStockDownloader(StockDownloader):
 								break
 							elif row['date'][0] == '共':
 								break
-
-							# 不明原因沒有開盤價，跳過這筆
-							if row['o_p'] == '--':
-								print("%s 資料有異開盤內容為'%s'，跳過！" % (row['date'],row['o_p']))
-								continue							
+	
+							no_vol = False
+							# 該日無成交
+							if row['vol'] == '0':
+								print("%s 無成交量！" % (row['date'],))
+								no_vol = True
 
 							tmp = row['date'][0:9].split('/')
 							row['date'] = int(datetime.datetime(int(tmp[0])+1911, int(tmp[1]), int(tmp[2]), tzinfo=datetime.timezone.utc).timestamp())
 							row['no'] = stockno
 			
 							row['change_spread'] = row['change_spread'].replace('X', '')
-							for key in strip:
-								row[key] = float(stripcma(row[key]))
+
+							if no_vol:
+								for key in strip:
+									row[key] = None
+							else:	
+								for key in strip:
+									row[key] = float(stripcma(row[key]))
 							
 
 							data.append(row)
