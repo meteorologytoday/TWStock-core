@@ -20,6 +20,13 @@ class Timeseries:
 		keys, arrs = list(zip(*keyarrs.items()))
 		self.addByTime(keys,arrs,time)
 
+
+	def add(self, key, arr):
+		if len(arr) != len(self.time):
+			raise Exception("Added data must be the same size as time.")
+
+		self.d[key] = np.array(arr, dtype=self.dtype)
+
 	def addByTime(self, keys, arrs, time):
 		"""
 			This function add new data into timeseries. It first compare

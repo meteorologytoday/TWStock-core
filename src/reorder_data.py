@@ -2,7 +2,7 @@ import sys, getopt
 from StockIO import StockReader
 from BizCorpIO import BizCorpReader
 from TWSException import *
-
+import BinaryData
 
 db_file = None
 
@@ -42,25 +42,6 @@ with BizCorpReader(db_file) as reader:
 
 bizcorp_keys = bizcorps.keys()
 
-output_fields = [
-	'vol',
-	'turnover',
-	'o_p',
-	'h_p',
-	'l_p',
-	'c_p',
-	'change_spread',
-	'count',
-	'foreign_i',
-	'foreign_o',
-	'trust_i',  
-	'trust_o',  
-	'dealer_self_i',
-	'dealer_self_o',
-	'dealer_hedge_i',
-	'dealer_hedge_o'
-]
-#output_fields = ['c_p']
 for stock_symbol, stock  in stocks.items():
 	if stock_symbol in bizcorp_keys:
 		bizcorp = bizcorps[stock_symbol]
@@ -68,6 +49,5 @@ for stock_symbol, stock  in stocks.items():
 
 	fname = "data/%s.bin" % (stock_symbol,)
 	print("Writing to %s... " % (fname,), end='')
-	stock.printBinary(fname, keys=output_fields)
+	stock.printBinary(fname, keys=BinaryData.data_fields)
 	print("done")
-stocks['1101'].print('1101.txt', ['dealer_self_i', 'foreign_i'])
