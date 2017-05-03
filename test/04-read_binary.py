@@ -2,7 +2,8 @@ import sys, getopt
 from datetime import datetime
 import BinaryData
 import numpy as np
-import matplotlib.pyplot as pplt;
+import matplotlib.pyplot as pplt
+
 bin_file = None
 
 try:
@@ -24,6 +25,8 @@ data = BinaryData.readBinaryData(bin_file)
 
 time_min, time_max = np.amin(data.time), np.amax(data.time)
 
+time_scaled = (data.time - time_min) / 86400
+
 x_label = [None for _ in data.time]
 
 for i, time in enumerate(data.time):
@@ -32,5 +35,7 @@ for i, time in enumerate(data.time):
 
 pplt.xlim([time_min - 86400, time_max + 86400])
 pplt.xticks(data.time, x_label, rotation='vertical')
+#candlestick2_ohlc(pplt.gca(), data.d['o_p'], data.d['c_p'], data.d['h_p'], data.d['l_p'])
 pplt.plot(data.time, data.d['c_p'], marker='o', markersize=10)
+pplt.plot(data.time, data.d['o_p'], marker='x', markersize=10)
 pplt.show()

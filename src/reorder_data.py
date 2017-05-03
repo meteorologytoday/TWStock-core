@@ -3,6 +3,7 @@ from StockIO import StockReader
 from BizCorpIO import BizCorpReader
 from TWSException import *
 import BinaryData
+import numpy as np
 
 db_file = None
 
@@ -42,12 +43,46 @@ with BizCorpReader(db_file) as reader:
 
 bizcorp_keys = bizcorps.keys()
 
+copy_items = ['o_p', 'c_p', 'h_p', 'l_p']
+def copyStock(data, idx_from, idx_to):
+	global copy_items
+	for item in copy_items:
+		data[item][idx_to] = data[item][idx_from]
+
+def deducePrevStock(data, idx_pivot, prev_cnt):
+	oc_p = data['o_p'][idx_pivot] - data['change_spread'][idx_pivot]
+	data['o_p'][idx_pivot - prev_cnt:idx_pivot] = oc_p 
+	data['c_p'][idx_pivot - prev_cnt:idx_pivot] = oc_p 
+	data['h_p'][idx_pivot - prev_cnt:idx_pivot] = 0 
+	data['l_p'][idx_pivot - prev_cnt:idx_pivot] = 0 
+
+
 for stock_symbol, stock  in stocks.items():
 	if stock_symbol in bizcorp_keys:
 		bizcorp = bizcorps[stock_symbol]
 		stock.addByTimeDict(bizcorp.d, bizcorp.time)
 
+	# 橋接當日無漲跌之股價
+	tmp = stock.d['c_p']
+	prev_nan = np.isnan(tmp[0])
+	prev_nan_cnt = 1 if prev_nan else 0
+	if not np.isnan(tmp).all(): # 至少要有一筆資料才能推算
+		for i in range(1, len(tmp)):
+
+			now_nan = np.isnan(tmp[i])
+			if (not prev_nan) and now_nan:    # 複製前日資料
+				copyStock(stock.d, i-1, i)
+			elif prev_nan and now_nan:        # 連續發現NaN    注意只有從頭就是NaN才會落入此一狀況
+				prev_nan_cnt += 1
+			elif prev_nan and (not now_nan):   # 回推前數日資料 注意只有從頭就是NaN才會落入此一狀況
+				deducePrevStock(stock.d, i, prev_nan_cnt)
+
+			# 記得將前一次的判斷暫存起來
+			prev_nan = now_nan
+
+	if stock_symbol == '1101':
+		print(stock.d['c_p'])
 	fname = "data/%s.bin" % (stock_symbol,)
-	print("Writing to %s... " % (fname,), end='')
+	#print("Writing to %s... " % (fname,), end='')
 	stock.printBinary(fname, keys=BinaryData.data_fields)
-	print("done")
+	#print("done")

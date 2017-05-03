@@ -88,7 +88,7 @@ class TPEXStockDownloader(StockDownloader):
 				data = []
 				err = []
 				for req_time in req_times:
-					print("收集股市資料(編號%s), %04d年%02d月" % (stockno, req_time.year, req_time.month))
+					print("收集TPEX股市資料(編號%s), %04d年%02d月" % (stockno, req_time.year, req_time.month))
 
 					retrieved = fetch_data(stockno, req_time)
 					if retrieved is None:

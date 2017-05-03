@@ -88,7 +88,7 @@ class TWSEStockDownloader(StockDownloader):
 				data = []
 				err = []
 				for req_time in req_times:
-					print("收集[%s]資料(編號%s), %04d年%02d月" % (name, stockno, req_time.year, req_time.month))
+					print("收集TWSE[%s]資料(編號%s), %04d年%02d月" % (name, stockno, req_time.year, req_time.month))
 
 					retrieved = fetch_data(stockno, req_time)
 					if retrieved is None:
