@@ -24,6 +24,8 @@ if db_file is None:
 
 stocks = {}
 bizcorps = {}
+
+print("正在讀取個股資訊")
 # Read Stock
 with StockReader(db_file) as reader:
 	stock_symbols = reader.getListOfNo()
@@ -31,6 +33,7 @@ with StockReader(db_file) as reader:
 	for stock_symbol in stock_symbols:
 		stocks[stock_symbol] = reader.readByNo(stock_symbol)
 
+print("正在讀取三大法人資訊")
 # Read BizCorp
 with BizCorpReader(db_file) as reader:
 	stock_symbols = reader.getListOfNo()
@@ -56,8 +59,10 @@ def deducePrevStock(data, idx_pivot, prev_cnt):
 	data['h_p'][idx_pivot - prev_cnt:idx_pivot] = 0 
 	data['l_p'][idx_pivot - prev_cnt:idx_pivot] = 0 
 
-
+fill_zeros = ['foreign_i', 'foreign_o', 'trust_i', 'trust_o', 'dealer_self_i', 'dealer_self_o', 'dealer_hedge_i', 'dealer_hedge_o']
 for stock_symbol, stock  in stocks.items():
+#	print("正在處理 %s " % (stock_symbol,))
+
 	if stock_symbol in bizcorp_keys:
 		bizcorp = bizcorps[stock_symbol]
 		stock.addByTimeDict(bizcorp.d, bizcorp.time)
@@ -80,8 +85,23 @@ for stock_symbol, stock  in stocks.items():
 			# 記得將前一次的判斷暫存起來
 			prev_nan = now_nan
 
-	if stock_symbol == '1101':
-		print(stock.d['c_p'])
+
+	if stock_symbol == '6103':
+		print(stock.d['foreign_i'])
+
+	# 對於三大法人資訊，missing即為0
+	for key in fill_zeros:
+		if not (key in stock.d): # 若無則跳過
+			continue
+
+		tmp = stock.d[key]
+		for i, val in enumerate(tmp):
+			if val == stock.missing:
+				tmp[i] = 0.0
+
+
+	if stock_symbol == '6103':
+		print(stock.d['foreign_i'])
 	fname = "data/%s.bin" % (stock_symbol,)
 	#print("Writing to %s... " % (fname,), end='')
 	stock.printBinary(fname, keys=BinaryData.data_fields)

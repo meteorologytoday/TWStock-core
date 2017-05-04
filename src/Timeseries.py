@@ -21,11 +21,17 @@ class Timeseries:
 		self.addByTime(keys,arrs,time)
 
 
-	def add(self, key, arr):
-		if len(arr) != len(self.time):
-			raise Exception("Added data must be the same size as time.")
+	def add(self, key, arr=None):
 
-		self.d[key] = np.array(arr, dtype=self.dtype)
+		if arr is None:
+			self.d[key] = np.zeros(len(self.time), dtype=self.dtype)
+			self.d[key][:] = self.missing
+
+		else:
+			if len(arr) != len(self.time):
+				raise Exception("Added data must be the same size as time.")
+	
+			self.d[key] = np.array(arr, dtype=self.dtype)
 
 	def addByTime(self, keys, arrs, time):
 		"""
