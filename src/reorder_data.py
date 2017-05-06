@@ -60,7 +60,7 @@ for i, (no, cnt) in enumerate(no_count):
 	stock = Timeseries(data[0][beg_i:end_i])
 	for j, field  in enumerate(BinaryData.all_fields):
 		stock.add(field, data[j][beg_i:end_i])
-
+	beg_i = end_i
 	# 資料後處理
 	# (1) 橋接當日無漲跌之股價
 	tmp = stock.d['c_p']
@@ -88,11 +88,11 @@ for i, (no, cnt) in enumerate(no_count):
 				tmp[j] = 0.0
 
 	# (3) 線性內插成每日資料
-	time_max, time_min = np.amax(stock.time), np.amin(stock.time)
-	new_time = np.arange(time_min, time_max + 1, 86400)
-	new_stock = Timeseries(new_time)
-	for key in stock.d:
-		new_stock.add(key, np.interp(new_time, stock.time, stock.d[key]))
+	#time_max, time_min = np.amax(stock.time), np.amin(stock.time)
+	#new_time = np.arange(time_min, time_max + 1, 86400)
+	#new_stock = Timeseries(new_time)
+	#for key in stock.d:
+#		new_stock.add(key, np.interp(new_time, stock.time, stock.d[key]))
 
 	fname = "data/%s.bin" % (no,)
 	print("正在寫入%s... " % (fname,), end='')

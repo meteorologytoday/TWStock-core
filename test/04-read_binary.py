@@ -20,11 +20,11 @@ if bin_file is None:
 	print("Must give paramter --bin")
 	sys.exit(2)
 
+print(bin_file)
 # read data
 data = BinaryData.readBinaryData(bin_file)
 
 time_min, time_max = np.amin(data.time), np.amax(data.time)
-
 time_scaled = (data.time - time_min) / 86400
 
 x_label = [None for _ in data.time]
@@ -44,5 +44,4 @@ ax2.set_xticklabels(x_label, rotation=90)
 ax1.plot(data.time, data.d['c_p'], marker='o', markersize=10)
 ax1.plot(data.time, data.d['o_p'], marker='x', markersize=10)
 ax2.bar(data.time- 43200.0, data.d['vol']/1000.0, 86400, color='y')
-
 pplt.show()
