@@ -2,10 +2,10 @@ import numpy as np
 from Timeseries import Timeseries as TS
 
 dtype = np.float32
-missing = -99999.0
+missing = np.nan
 
 all_fields = [
-	'timestamp',
+	'date',
 	'vol',
 	'turnover',
 	'o_p',

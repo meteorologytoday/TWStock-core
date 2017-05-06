@@ -24,4 +24,4 @@ sel_cols = [
 	'count'
 ]
 
-
+table_name = 'stocks'

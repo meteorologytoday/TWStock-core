@@ -24,7 +24,7 @@ class StockDownloader:
 
 	def connectDB(self):
 		c = sqlite3.connect(self.db_fname)
-		c.execute('''CREATE TABLE IF NOT EXISTS stocks (
+		c.execute('''CREATE TABLE IF NOT EXISTS ''' + StockShare.table_name + ''' (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			no TEXT,
 			date INTEGER,

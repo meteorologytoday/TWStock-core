@@ -4,7 +4,7 @@ class Timeseries:
 	"""
 		Variable [time] is assumed to be ascending.
 	"""
-	def __init__(self, time, missing=-99999.0, dtype=np.float32):
+	def __init__(self, time, missing=np.nan, dtype=np.float32):
 		self.time = np.array(time, dtype=dtype)
 		self.missing = dtype(missing)
 		self.d = {}

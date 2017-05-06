@@ -33,9 +33,17 @@ for i, time in enumerate(data.time):
 	t = datetime.utcfromtimestamp(time)
 	x_label[i] = t.strftime("%m/%d")
 
-pplt.xlim([time_min - 86400, time_max + 86400])
-pplt.xticks(data.time, x_label, rotation='vertical')
+fig, (ax1, ax2) = pplt.subplots(2, sharex=True)
+#fig.subplots_adjust(hspace=0)
+
+ax2.set_xlim([time_min - 86400, time_max + 86400])
+ax2.set_xticks(data.time)
+ax2.set_xticklabels(x_label, rotation=90)
+
 #candlestick2_ohlc(pplt.gca(), data.d['o_p'], data.d['c_p'], data.d['h_p'], data.d['l_p'])
-pplt.plot(data.time, data.d['c_p'], marker='o', markersize=10)
-pplt.plot(data.time, data.d['o_p'], marker='x', markersize=10)
+ax1.plot(data.time, data.d['c_p'], marker='o', markersize=10)
+ax1.plot(data.time, data.d['o_p'], marker='x', markersize=10)
+
+ax2.bar(data.time- 43200.0, data.d['vol']/1000.0, 86400, color='y')
+
 pplt.show()
