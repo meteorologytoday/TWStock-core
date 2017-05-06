@@ -5,6 +5,14 @@ import BinaryData
 import numpy as np
 import sqlite3
 from Timeseries import Timeseries
+import os
+
+if not os.path.isdir('data'):
+	os.mkdir('data')
+
+if not os.path.isdir('interp_data'):
+	os.mkdir('interp_data')
+
 
 
 def copyStock(data, idx_from, idx_to):
@@ -88,12 +96,17 @@ for i, (no, cnt) in enumerate(no_count):
 				tmp[j] = 0.0
 
 	# (3) 線性內插成每日資料
-	#time_max, time_min = np.amax(stock.time), np.amin(stock.time)
-	#new_time = np.arange(time_min, time_max + 1, 86400)
-	#new_stock = Timeseries(new_time)
-	#for key in stock.d:
-#		new_stock.add(key, np.interp(new_time, stock.time, stock.d[key]))
+	time_max, time_min = np.amax(stock.time), np.amin(stock.time)
+	new_time = np.arange(time_min, time_max + 1, 86400)
+	new_stock = Timeseries(new_time)
+	for key in stock.d:
+		new_stock.add(key, np.interp(new_time, stock.time, stock.d[key]))
 
+	fname = "interp_data/%s.bin" % (no,)
+	print("正在寫入%s... " % (fname,), end='')
+	new_stock.printBinary(fname, keys=BinaryData.data_fields)
+	print("完成。")
+	
 	fname = "data/%s.bin" % (no,)
 	print("正在寫入%s... " % (fname,), end='')
 	stock.printBinary(fname, keys=BinaryData.data_fields)
