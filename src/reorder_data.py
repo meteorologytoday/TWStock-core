@@ -30,6 +30,8 @@ get_count_cmd = '''SELECT s.no, count(s.no) FROM ''' + stock_table_name + ''' AS
 # SELECT 順序必須完全符合 BinaryData.all_fields
 get_data_cmd = '''SELECT s.date, s.vol, s.turnover, s.o_p, s.h_p, s.l_p, s.c_p, s.change_spread, s.count, b.foreign_i, b.foreign_o, b.trust_i, b.trust_o, b.dealer_self_i, b.dealer_self_o, b.dealer_hedge_i, b.dealer_hedge_o FROM ''' + stock_table_name + ''' AS s LEFT OUTER JOIN ''' + bizcorp_table_name + ''' AS b ON ( s.no = b.no AND s.date = b.date ) ORDER BY s.no ASC, s.date ASC;'''
 
+fill_zeros = ['vol', 'turnover', 'change_spread', 'count', 'foreign_i', 'foreign_o', 'trust_i', 'trust_o', 'dealer_self_i', 'dealer_self_o', 'dealer_hedge_i', 'dealer_hedge_o']
+
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "", ["database="])
 except getopt.GetoptError as err:
@@ -78,43 +80,22 @@ for i, (no, cnt) in enumerate(no_count):
 			# 記得將前一次的判斷暫存起來
 			prev_nan = now_nan
 
+	# (2) 對於三大法人，NaN等同於0
+	for key in fill_zeros:
+		tmp = stock.d[key]
+		for j, val in enumerate(tmp):
+			if np.isnan(val):
+				tmp[j] = 0.0
+
+	# (3) 線性內插成每日資料
+	time_max, time_min = np.amax(stock.time), np.amin(stock.time)
+	new_time = np.arange(time_min, time_max + 1, 86400)
+	new_stock = Timeseries(new_time)
+	for key in stock.d:
+		new_stock.add(key, np.interp(new_time, stock.time, stock.d[key]))
 
 	fname = "data/%s.bin" % (no,)
 	print("正在寫入%s... " % (fname,), end='')
 	stock.printBinary(fname, keys=BinaryData.data_fields)
 	print("完成。")
 	
-"""	
-		
-
-
-fill_zeros = ['foreign_i', 'foreign_o', 'trust_i', 'trust_o', 'dealer_self_i', 'dealer_self_o', 'dealer_hedge_i', 'dealer_hedge_o']
-for stock_symbol, stock  in stocks.items():
-#	print("正在處理 %s " % (stock_symbol,))
-
-	if stock_symbol in bizcorp_keys:
-		bizcorp = bizcorps[stock_symbol]
-		stock.addByTimeDict(bizcorp.d, bizcorp.time)
-
-
-	if stock_symbol == '6103':
-		print(stock.d['foreign_i'])
-
-	# 對於三大法人資訊，missing即為0
-	for key in fill_zeros:
-		if not (key in stock.d): # 若無則跳過
-			continue
-
-		tmp = stock.d[key]
-		for i, val in enumerate(tmp):
-			if val == stock.missing:
-				tmp[i] = 0.0
-
-
-	if stock_symbol == '6103':
-		print(stock.d['foreign_i'])
-	fname = "data/%s.bin" % (stock_symbol,)
-	#print("Writing to %s... " % (fname,), end='')
-	stock.printBinary(fname, keys=BinaryData.data_fields)
-	#print("done")
-"""

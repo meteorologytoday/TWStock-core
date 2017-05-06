@@ -20,9 +20,7 @@ class Timeseries:
 		keys, arrs = list(zip(*keyarrs.items()))
 		self.addByTime(keys,arrs,time)
 
-
 	def add(self, key, arr=None):
-
 		if arr is None:
 			self.d[key] = np.zeros(len(self.time), dtype=self.dtype)
 			self.d[key][:] = self.missing

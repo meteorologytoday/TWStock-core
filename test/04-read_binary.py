@@ -43,7 +43,6 @@ ax2.set_xticklabels(x_label, rotation=90)
 #candlestick2_ohlc(pplt.gca(), data.d['o_p'], data.d['c_p'], data.d['h_p'], data.d['l_p'])
 ax1.plot(data.time, data.d['c_p'], marker='o', markersize=10)
 ax1.plot(data.time, data.d['o_p'], marker='x', markersize=10)
-
 ax2.bar(data.time- 43200.0, data.d['vol']/1000.0, 86400, color='y')
 
 pplt.show()
