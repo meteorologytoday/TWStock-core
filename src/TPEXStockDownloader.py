@@ -14,13 +14,20 @@ strip = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count'
 def stripcma(s):
 	return s.replace(',', '')
 
-
 def prevMonth(year, month, dmonth):
 	"""
-		One base: 1 = Jan, 2 = Feb, ..., 12 = Dec.
+		Input and output are in the form of 
+		base 1 = Jan, 2 = Feb, ..., 12 = Dec.
 	"""
-	time = year + (month - 1 - dmonth) / 12.0
-	return int(round(time)), int(round((time - int(time)) * 12.0 + 1))
+	dyear = int(dmonth / 12)
+	m_residue = dmonth % 12
+
+	if m_residue <= month - 1:
+		return year-dyear, month - m_residue
+
+	else:
+		return year-dyear - 1, 12 + month  - m_residue
+
 
 def fetch_data(stockno, req_time):
 	"""
