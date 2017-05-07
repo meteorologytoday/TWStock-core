@@ -6,6 +6,7 @@ from io import StringIO
 import datetime
 from socket import timeout
 from StockShare import *
+import TimeFuncs
 
 TWSE_HOST = "http://www.twse.com.tw/"
 cvs_data_cols = ['date', 'vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
@@ -15,20 +16,6 @@ strip = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count'
 def stripcma(s):
 	return s.replace(',', '')
 
-
-def prevMonth(year, month, dmonth):
-	"""
-		Input and output are in the form of 
-		base 1 = Jan, 2 = Feb, ..., 12 = Dec.
-	"""
-	dyear = int(dmonth / 12)
-	m_residue = dmonth % 12
-
-	if m_residue <= month - 1:
-		return year-dyear, month - m_residue
-
-	else:
-		return year-dyear - 1, 12 + month  - m_residue
 
 def fetch_data(stockno, req_time):
 	"""
@@ -84,7 +71,7 @@ class TWSEStockDownloader(StockDownloader):
 		req_times = []
 		
 		for i in range(0, kwargs['months']):
-			y, m = prevMonth(now.year, now.month, i)
+			y, m = TimeFuncs.prevMonth(now.year, now.month, i)
 			req_times.append(datetime.datetime(y, m, 1, tzinfo=datetime.timezone.utc))
 
 		
