@@ -159,3 +159,4 @@ class TPEXStockDownloader(StockDownloader):
 					self.addErrorTarget(stockno, ';'.join(err))
 
 				self.writeDB(data)
+				sys.stdout.flush()

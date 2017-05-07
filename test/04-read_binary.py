@@ -20,9 +20,10 @@ if bin_file is None:
 	print("Must give paramter --bin")
 	sys.exit(2)
 
-print(bin_file)
+
 # read data
 data = BinaryData.readBinaryData(bin_file)
+print(len(data.time))
 
 time_min, time_max = np.amin(data.time), np.amax(data.time)
 time_scaled = (data.time - time_min) / 86400

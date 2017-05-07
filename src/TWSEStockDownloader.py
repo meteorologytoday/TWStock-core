@@ -90,6 +90,7 @@ class TWSEStockDownloader(StockDownloader):
 		
 		with open(kwargs['targets'], 'r') as target_file:
 			for stock in csv.DictReader(target_file, ['stockno', 'name']):
+
 				name = stock['name']
 				stockno = stock['stockno']
 				data = []
@@ -155,3 +156,4 @@ class TWSEStockDownloader(StockDownloader):
 					self.addErrorTarget(stockno, ';'.join(err))
 
 				self.writeDB(data)
+				sys.stdout.flush()
