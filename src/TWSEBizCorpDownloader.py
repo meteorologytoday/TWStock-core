@@ -6,10 +6,11 @@ import json, re, sys, os, csv
 from io import StringIO
 import datetime
 from socket import timeout
-
+from eprint import eprint
 TWSE_HOST = "http://www.twse.com.tw/"
 
-
+# 民國103年12/01開始自營商欄位區分成避險買賣等等
+# 目前設計僅針對103年12/01之後的表格(這個部分處理極為痛苦)
 
 cvs_data_cols = [                                         \
 	'no', 'name',                                         \
@@ -63,6 +64,8 @@ class TWSEBizCorpDownloader(BizCorpDownloader):
 
 		today = int(datetime.datetime.utcnow().timestamp() / 86400.0 ) * 86400
 		req_times = [today - 86400*i for i in range(0, kwargs['days'])]
+
+		req_times = req_times[::-1]
 		
 		for req_time in req_times:
 			data = []
@@ -74,7 +77,7 @@ class TWSEBizCorpDownloader(BizCorpDownloader):
 			print("收集TWSE%04d年%02d月%02d日三大法人資料" % (req_time.year, req_time.month, req_time.day))
 			retrieved = fetch_data(req_time)
 			if retrieved is None:
-				print("錯誤發生，跳過！")
+				eprint("錯誤發生，跳過！")
 				err.append('fetch_data')
 				continue
 
@@ -89,7 +92,7 @@ class TWSEBizCorpDownloader(BizCorpDownloader):
 					next(reader)
 					next(reader)
 				except StopIteration:
-					print("讀取CSV時錯誤發生，跳過！")
+					eprint("讀取CSV時錯誤發生，跳過！")
 					err.append('csv')
 					continue
 			
@@ -100,7 +103,10 @@ class TWSEBizCorpDownloader(BizCorpDownloader):
 						break
 
 					for key in strip:
-						row[key] = float(stripcma(row[key]))
+						try:
+							row[key] = float(stripcma(row[key]))
+						except Exception:
+							eprint("資料轉換發生錯誤，欄位：%s，值：%s，原始內容：%s" % (key, row[key], str(row)))
 
 					row['no'] = row['no'][2:-1].strip()
 					data.append(row)
