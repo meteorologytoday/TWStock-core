@@ -1,5 +1,10 @@
 import numpy as np
 
+class mixAnalysis:
+	def genAnalysis(self):
+		self.d['dif'] = dif(self.d['c_p'])
+
+
 def ema(data, days):
 	smooth = 2.0 / (1.0 + days)
 	result = np.zeros(len(data))

@@ -1,6 +1,6 @@
 import numpy as np
-
-class Timeseries:
+import MathFuncs
+class Timeseries(MathFuncs.mixAnalysis, object):
 	"""
 		Variable [time] is assumed to be ascending.
 	"""
@@ -102,8 +102,6 @@ class Timeseries:
 				arr[:,i+1] = self.d[key]
 		
 		arr.tofile(filename)
-
-	
 
 	def print(self, filename, keys=None):
 		if keys is None:
