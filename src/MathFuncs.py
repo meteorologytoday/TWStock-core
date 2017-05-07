@@ -27,3 +27,27 @@ def ema(data, days):
 
 def dif(data, s=12, l=26):
 	return ema(data, s) - ema(data, l)
+
+def findCrx(data1, data2, detect_days=1):
+	"""
+	This function finds the crossing point (+1 for upward, -1 for downward)
+	in [detect_days] days. Note that upward crossing means data1 penetrates
+	data2 at sometime between detection region and vice versa.
+	"""
+	if detect_days <= 0:
+		error('detect_days must be positive integer.')
+
+	tmp = data1 - data2
+	n = len(tmp) - 1
+
+	# element 0 correspond to the latest day, 1 the previous one day, and so on
+	signal = np.zeros(detect_days)
+	
+	for day_shift in range(0, detect_days):
+		current = n - day_shift
+		if tmp[current -1] < 0 and tmp[current] >= 0:
+			signal[day_shift] = 1
+		elif tmp[current -1] >= 0 and tmp[current] < 0:
+			signal[day_shift] = -1
+
+	return signal if detect_days > 1 else signal[0]
