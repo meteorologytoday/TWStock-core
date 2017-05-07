@@ -28,7 +28,6 @@ class Timeseries(MathFuncs.mixAnalysis, object):
 		else:
 			if len(arr) != len(self.time):
 				raise Exception("Added data must be the same size as time.")
-	
 			self.d[key] = np.array(arr, dtype=self.dtype)
 
 	def addByTime(self, keys, arrs, time):
