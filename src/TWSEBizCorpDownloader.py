@@ -65,8 +65,6 @@ class TWSEBizCorpDownloader(BizCorpDownloader):
 		today = int(datetime.datetime.utcnow().timestamp() / 86400.0 ) * 86400
 		req_times = [today - 86400*i for i in range(0, kwargs['days'])]
 
-		req_times = req_times[::-1]
-		
 		for req_time in req_times:
 			data = []
 			err = []
