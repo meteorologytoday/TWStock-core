@@ -25,8 +25,6 @@ for dirname, dirnames, filenames in os.walk('data'):
 
 
 		if sig_crx3 and sig_foreign_buy3:
-			#print(no)
-			#print(data.d['foreign_i'][-3:])
 			nos.append(no)
 
 for no in nos:

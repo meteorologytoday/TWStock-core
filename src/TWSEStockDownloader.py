@@ -49,8 +49,6 @@ def fetch_data(stockno, req_time):
 		data = None 
 	except timeout:
 		data = None
-		
-
 	
 	return data
 

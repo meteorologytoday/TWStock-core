@@ -2,4 +2,4 @@
 
 PY=python3
 
-$PY src/download_stock.py --scan --marker=_SCAN
+$PY src/download_Stock.py --scan --marker=_SCAN
