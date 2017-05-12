@@ -1,2 +1,2 @@
 export PYTHONPATH=$PYTHONPATH:`pwd`/src
-export TWSEStockPATH=`pwd`
+export TWStockPATH=`pwd`
