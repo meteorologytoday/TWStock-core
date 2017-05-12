@@ -1,6 +1,6 @@
 #/bin/bash
-scripts_path=$TWSEStockPATH/scripts
-src_path=$TWSEStockPATH/src
+scripts_path=$TWStockPATH/scripts
+src_path=$TWStockPATH/src
 months=$1
 if [ -z "$1" ]; then
 	months=2
