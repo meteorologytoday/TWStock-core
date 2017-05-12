@@ -16,6 +16,7 @@
     > ./scan.sh
 
 # 抓取資料
+    > ./script/download.sh                # 若無參數，預設抓取2個月的資料到STOCK.db
     > ./script/download.sh 12             # 抓取從今天往回推12個月資料，資料都會下載到STOCK.db
 
 # 排列整理
