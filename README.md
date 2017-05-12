@@ -13,16 +13,16 @@
     > . setup.sh    # 純粹將src納入搜尋路徑
 
 # 掃描股市名稱
-    > ./scan.sh
+    > ./scan.sh
 
 # 抓取資料
-    > ./script/download.sh                # 若無參數，預設抓取2個月的資料到STOCK.db
-    > ./script/download.sh 12             # 抓取從今天往回推12個月資料，資料都會下載到STOCK.db
+    > ./script/download.sh                # 若無參數，預設抓取2個月的資料到STOCK.db
+    > ./script/download.sh 12             # 抓取從今天往回推12個月資料，資料都會下載到STOCK.db
 
 # 排列整理
-    > # 將資料整理成一個一個Binary檔，依照股票編號輸出至data資料夾
-    > # 另外也內插成「每日」資料(變成等時距)，存放至interp_data。科學分析可能較有需求
-    > python3 src/reorder_data.py --database=STOCK.db
+    > # 將資料整理成一個一個Binary檔，依照股票編號輸出至data資料夾
+    > # 另外也內插成「每日」資料(變成等時距)，存放至interp_data。科學分析可能較有需求
+    > python3 src/reorder_data.py --database=STOCK.db
 
 # 檔案後續分析
 
