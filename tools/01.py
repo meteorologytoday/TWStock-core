@@ -1,11 +1,11 @@
-import os, sys, re
-from datetime import datetime
-import BinaryData
+import os, sys, re, csv
 import numpy as np
+
+import BinaryData
 from StockNames import name_table
 import MathFuncs
 
-nos = []
+candidates = []
 
 parser = re.compile(r'(\d+)\.bin')
 for dirname, dirnames, filenames in os.walk('data'):
@@ -25,9 +25,8 @@ for dirname, dirnames, filenames in os.walk('data'):
 
 
 		if sig_crx3 and sig_foreign_buy3:
-			nos.append(no)
+			candidates.append([no, data.d['c_p'][-1]])
 
-for no in nos:
-	print("%s (%s)" % (no, name_table[no]))
-
-print("Total %d result(s)." % (len(nos),))
+csvwriter = csv.writer(sys.stdout)
+for candidate in candidates:
+	csvwriter.writerow([candidate[0], name_table[candidate[0]], candidate[1]])
