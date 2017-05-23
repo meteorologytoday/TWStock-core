@@ -8,7 +8,7 @@ from socket import timeout
 from StockShare import *
 import TimeFuncs
 
-TWSE_HOST = "http://www.twse.com.tw/"
+TWSE_HOST = "http://www.twse.com.tw"
 cvs_data_cols = ['date', 'vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
 
 strip = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
@@ -30,21 +30,24 @@ def fetch_data(stockno, req_time):
 		8. 成交筆數
 	"""
 	params = {
-		'download'    : 'csv',
-		'query_year'  : str(req_time.year),
-		'query_month' : str(req_time.month),
-		'CO_ID'       : stockno
+		'response'    : 'csv',
+		'date'        : req_time.strftime("%Y%m%d"),
+		'stockNo'     : stockno
 	}
+
+
+
 	data = urllib.parse.urlencode(params)
 	data = data.encode('ascii') # data should be bytes
 	req = urllib.request.Request(
-		TWSE_HOST + 'ch/trading/exchange/STOCK_DAY/STOCK_DAYMAIN.php',
-		data
+		TWSE_HOST + '/exchangeReport/STOCK_DAY?response=csv&date=20170524&stockNo=1101'
 	)
 
 	try:
 		with urllib.request.urlopen(req, timeout=1) as response:
-			data = response.read().decode('cp950')
+			data = response.read()
+			print(data)
+			data = data.decode('cp950')
 	except urllib.error.URLError:
 		data = None 
 	except timeout:
