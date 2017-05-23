@@ -44,7 +44,9 @@ def fetch_data(stockno, req_time):
 
 	try:
 		with urllib.request.urlopen(req, timeout=1) as response:
-			data = response.read().decode('cp950')
+			data = response.read()
+			print(data)
+			data = data.decode('cp950')
 	except urllib.error.URLError:
 		data = None 
 	except timeout:
