@@ -1,6 +1,9 @@
 # TWStock
 台灣股票抓取程式，作者XTT。
 
+# 已知問題
+- 2017/05/24 發現證交所與證券櫃檯買賣中心之資料抓取連結異動，正在修復中。(dev/fix-download-src)
+
 # 相依性
 - Python3.4+
 - Pip: sqlite3, Numpy, Matplotlib (optinal)
