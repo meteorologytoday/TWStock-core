@@ -1,6 +1,6 @@
 import sys, getopt
 from datetime import datetime, timedelta
-from Downloader.TWSEDailyStockDownloader import TWSEDailyStockDownloader
+
 
 db_file = "STOCK.db"
 days=1
@@ -33,7 +33,14 @@ print("DATABASE   file: %s" % (db_file,))
 print("Doing TWSE? %s" % ("Yes" if do_twse else "No",))
 print("Doing TPEX? %s" % ("Yes" if do_tpex else "No",))
 
-with TWSEDailyStockDownloader(db_file) as handler:
+if do_twse:
+	from Downloader.TWSEDailyStockDownloader import TWSEDailyStockDownloader
+	with TWSEDailyStockDownloader(db_file) as handler:
+		handler.download(download_beg_t, now)
+
+if do_tpex:
+	from Downloader.TPEXDailyStockDownloader import TPEXDailyStockDownloader
+	with TPEXDailyStockDownloader(db_file) as handler:
 		handler.download(download_beg_t, now)
 
 

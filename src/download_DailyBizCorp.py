@@ -1,6 +1,6 @@
 import sys, getopt
 from datetime import datetime, timedelta
-from Downloader.TWSEDailyBizCorpDownloader import TWSEDailyBizCorpDownloader
+
 
 db_file = "STOCK.db"
 days=1
@@ -33,9 +33,15 @@ print("DATABASE   file: %s" % (db_file,))
 print("Doing TWSE? %s" % ("Yes" if do_twse else "No",))
 print("Doing TPEX? %s" % ("Yes" if do_tpex else "No",))
 
-with TWSEDailyBizCorpDownloader(db_file) as handler:
+if do_twse:
+	from Downloader.TWSEDailyBizCorpDownloader import TWSEDailyBizCorpDownloader
+	with TWSEDailyBizCorpDownloader(db_file) as handler:
 		handler.download(download_beg_t, now)
 
+if do_tpex:
+	from Downloader.TPEXDailyBizCorpDownloader import TPEXDailyBizCorpDownloader
+	with TPEXDailyBizCorpDownloader(db_file) as handler:
+		handler.download(download_beg_t, now)
 
 print("下載完成！")
 print("共費時%d秒" % (int(datetime.now().timestamp() - beg_t),))
