@@ -1,4 +1,4 @@
-from StockIO import StockDownloader
+from BizCorpIO import BizCorpDownloader
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
@@ -9,31 +9,34 @@ from StockShare import *
 import TimeFuncs
 
 TWSE_HOST = "http://www.twse.com.tw"
-cvs_data_cols = ['no', 'stockname', 'vol', 'count', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'sign', 'change']
 
-float_data = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
+# 民國103年12/01開始自營商欄位區分成避險買賣等等
+# 目前設計僅針對103年12/01之後的表格(這個部分處理極為痛苦)
+
+cvs_data_cols = [                                         \
+	'no', 'name',                                         \
+	'foreign_i', 'foreign_o', 'foreign_n',                \
+	'trust_i', 'trust_o', 'trust_n',                      \
+	'dealer_net',                                         \
+	'dealer_self_i', 'dealer_self_o', 'dealer_self_n',    \
+	'dealer_hedge_i', 'dealer_hedge_o', 'dealer_hedge_n', \
+	'net'
+]
+
+float_data = ['foreign_i', 'foreign_o', 'trust_i', 'trust_o', 'dealer_self_i', 'dealer_self_o', 'dealer_hedge_i', 'dealer_hedge_o']
+
+
 
 def fetch_data(req_time):
-	"""
-		0. 日期
-		1. 成交股數
-		2. 成交金額
-		3. 開盤價
-		4. 最高價
-		5. 最低價
-		6. 收盤價
-		7. 漲跌價差
-		8. 成交筆數
-	"""
 	params = {
 		'response'    : 'csv',
 		'date'        : req_time.strftime("%Y%m%d"),
-		'type'     : 'ALL'
+		'selectType'  : 'ALL'
 	}
 
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		TWSE_HOST + '/exchangeReport/MI_INDEX?' + params
+		TWSE_HOST + '/fund/T86?' + params
 	)
 
 	try:
@@ -50,7 +53,6 @@ def fetch_data(req_time):
 #stockno_filter = re.compile(r'^[\dA-Z]+$')
 stockno_filter = re.compile(r'^\d{4}$')
 char_filter = re.compile(r'[ =]')
-missing_data_filter = re.compile(r'^-{2,}$')
 def parseFile(text):
 	global stockno_filter, char_filter
 	text = char_filter.sub('', text)
@@ -69,40 +71,30 @@ def parseFile(text):
 			if not stockno_filter.match(row['no']):
 				continue
 				
-			fixed = False
-			# 該日無漲跌
-			if missing_data_filter.match(row['o_p']):
-				fixed = True
-	
-			row['change_spread'] = "%s%s" % (row['sign'].replace('X', ''), row['change'])
-			if fixed:
-				for key in float_data:
-					row[key] = None
-			else:
-				for key in float_data:
-					row[key] = float(row[key].replace(',', ''))
+			for key in float_data:
+				row[key] = float(row[key].replace(',', ''))
 	
 			data.append(row)
 
 	return data
 
 
-class TWSEDailyStockDownloader(StockDownloader):
+class TWSEDailyBizCorpDownloader(BizCorpDownloader):
 	def __init__(self, db_fname):
 		super().__init__(db_fname)
 
 
 	def download(self, beg_date=datetime.datetime.now(), end_date=datetime.datetime.now()):
 
-		print("收集TWSE資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
+		print("收集TWSE三大法人資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
 		# iterate over time
 		for today in TimeFuncs.iter_date(beg_date, end_date, include_end=True):
-			print("收集TWSE資料: %s" % today.strftime("%Y/%m/%d"))
+			print("收集TWSE三大法人資料: %s" % today.strftime("%Y/%m/%d"))
 				
 			err = []
-
+			retrieved = fetch_data(today)
 			try:
-				retrieved = fetch_data(today)
+				pass
 			except Exception as e:
 				print("錯誤發生，跳過！")
 				print(str(e))
@@ -110,15 +102,16 @@ class TWSEDailyStockDownloader(StockDownloader):
 				continue
 
 
+			data = parseFile(retrieved)
 			try:
-				data = parseFile(retrieved)
+				pass
 			except Exception as e:
 				exc_type, exc_obj, exc_tb = sys.exc_info()
 				fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 				print(exc_type, fname, exc_tb.tb_lineno)
 				print("解析CSV錯誤發生，跳過！")
 				print(str(e))
-				err.append([req_time.strftime('%Y/%m/%d'), 'fetch_data:' + str(e)])
+				err.append([today.strftime('%Y/%m/%d'), 'fetch_data:' + str(e)])
 				continue
 
 			for i in range(len(data)):
