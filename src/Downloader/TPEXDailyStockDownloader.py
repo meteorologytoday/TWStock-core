@@ -64,13 +64,21 @@ def parseFile(text):
 	
 			row['change_spread'] = row['change_spread'].replace('X', '')
 
+			ex_div_right = False
+			if row['change_spread'] in ['除息', '除權']:
+				row['change_spread'] = '0'
+				ex_div_right = True
+
 			if fixed:
 				for key in float_data:
 					row[key] = None
 			else:
 				for key in float_data:
 					row[key] = float(row[key].replace(',', ''))
-	
+
+			if ex_div_right:
+				row['change_spread'] = row['c_p'] - row['o_p']
+
 			data.append(row)
 
 	return data
