@@ -7,7 +7,6 @@ if [ -z "$1" ]; then
 fi
 
 echo "Download Months: $days"
-$scripts_path/download_Stock.sh $days
-$scripts_path/download_BizCorp.sh $days
+python3 $src_path/download_daily.py --TPEX --TWSE --stock --bizcorp --finmar --days=$days
 python3 $src_path/reorder_data.py --database=STOCK.db
 echo "Download is finished!"

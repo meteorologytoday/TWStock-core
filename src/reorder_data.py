@@ -37,7 +37,7 @@ db_file = None
 get_count_cmd = '''SELECT s.no, count(s.no) FROM ''' + stock_table_name + ''' AS s LEFT OUTER JOIN ''' + bizcorp_table_name + ''' AS b ON ( s.no = b.no AND s.date = b.date ) LEFT OUTER JOIN ''' + finmar_table_name + ''' AS f ON ( s.no = f.no AND s.date = f.date ) GROUP BY s.no ORDER BY s.no ASC;'''
 
 # SELECT 順序必須完全符合 BinaryData.all_fields
-get_data_cmd = '''SELECT s.date, s.vol, s.turnover, s.o_p, s.h_p, s.l_p, s.c_p, s.change_spread, s.count, b.foreign_i, b.foreign_o, b.trust_i, b.trust_o, b.dealer_self_i, b.dealer_self_o, b.dealer_hedge_i, b.dealer_hedge_o, f.fin_pb, f.fin_b, f.fin_s, f.fin_r, f.fin_l, f.mar_pb, f.mar_b, f.mar_s, f.mar_r, f.mar_l, f.day_trade FROM ''' + stock_table_name + ''' AS s LEFT OUTER JOIN ''' + bizcorp_table_name + ''' AS b ON ( s.no = b.no AND s.date = b.date ) LEFT OUTER JOIN ''' + finmar_table_name + ''' AS f ON ( s.no = f.no AND s.date = f.date ) ORDER BY s.no ASC, s.date ASC;'''
+get_data_cmd = '''SELECT s.date, s.vol, s.turnover, s.o_p, s.h_p, s.l_p, s.c_p, s.change_spread, s.count, b.foreign_i, b.foreign_o, b.trust_i, b.trust_o, b.dealer_self_i, b.dealer_self_o, b.dealer_hedge_i, b.dealer_hedge_o, f.fin_pbal, f.fin_b, f.fin_s, f.fin_r, f.fin_l, f.mar_pbal, f.mar_b, f.mar_s, f.mar_r, f.mar_l, f.day_trade FROM ''' + stock_table_name + ''' AS s LEFT OUTER JOIN ''' + bizcorp_table_name + ''' AS b ON ( s.no = b.no AND s.date = b.date ) LEFT OUTER JOIN ''' + finmar_table_name + ''' AS f ON ( s.no = f.no AND s.date = f.date ) ORDER BY s.no ASC, s.date ASC;'''
 
 fill_zeros = ['vol', 'turnover', 'change_spread', 'count', 'foreign_i', 'foreign_o', 'trust_i', 'trust_o', 'dealer_self_i', 'dealer_self_o', 'dealer_hedge_i', 'dealer_hedge_o']
 

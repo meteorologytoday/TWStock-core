@@ -72,10 +72,10 @@ class TPEXDailyFinMarDownloader(FinMarDownloader):
 
 	def download(self, beg_date=datetime.datetime.now(), end_date=datetime.datetime.now()):
 
-		print("收集TWSE融資融券餘額資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
+		print("收集TPEX融資融券餘額資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
 		# iterate over time
 		for today in TimeFuncs.iter_date(beg_date, end_date, include_end=True):
-			print("收集TWSE融資融券餘額資料: %s" % today.strftime("%Y/%m/%d"))
+			print("收集TPEX融資融券餘額資料: %s" % today.strftime("%Y/%m/%d"))
 				
 			err = []
 
