@@ -1,4 +1,4 @@
-table_name = 'FinanceMargin'
+table_name = 'FinMar'
 cols_desc = [
 	('id',             'INTEGER PRIMARY KEY AUTOINCREMENT'),
 	('no',             'TEXT'),       # 股票代號
