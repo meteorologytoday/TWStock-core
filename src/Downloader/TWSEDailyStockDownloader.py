@@ -8,7 +8,7 @@ from socket import timeout
 from StockShare import *
 import TimeFuncs
 
-TWSE_HOST = "http://www.twse.com.tw"
+HOST = "http://www.twse.com.tw"
 cvs_data_cols = ['no', 'stockname', 'vol', 'count', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'sign', 'change']
 
 float_data = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
@@ -33,7 +33,7 @@ def fetch_data(req_time):
 
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		TWSE_HOST + '/exchangeReport/MI_INDEX?' + params
+		HOST + '/exchangeReport/MI_INDEX?' + params
 	)
 
 	try:

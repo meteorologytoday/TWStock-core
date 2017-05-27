@@ -8,7 +8,7 @@ from socket import timeout
 from StockShare import *
 import TimeFuncs
 
-TWSE_HOST = "http://www.twse.com.tw"
+HOST = "http://www.twse.com.tw"
 
 # 民國103年12/01開始自營商欄位區分成避險買賣等等
 # 目前設計僅針對103年12/01之後的表格(這個部分處理極為痛苦)
@@ -36,7 +36,7 @@ def fetch_data(req_time):
 
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		TWSE_HOST + '/fund/T86?' + params
+		HOST + '/fund/T86?' + params
 	)
 
 	try:

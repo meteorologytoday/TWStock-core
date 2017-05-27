@@ -8,10 +8,10 @@ from socket import timeout
 from FinMarShare import *
 import TimeFuncs
 
-TWSE_HOST = "http://www.twse.com.tw"
-cvs_data_cols = ['no', 'stockname', 'fin_b', 'fin_s', 'fin_r', 'fin_pb', 'fin_cb', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pb', 'mar_cb', 'mar_l', 'day_trade', 'note']
+HOST = "http://www.twse.com.tw"
+cvs_data_cols = ['no', 'stockname', 'fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_cbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_cbal', 'mar_l', 'day_trade', 'note']
 
-float_data = ['fin_b', 'fin_s', 'fin_r', 'fin_pb', 'fin_cb', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pb', 'mar_cb', 'mar_l', 'day_trade']
+float_data = ['fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_l', 'day_trade']
 
 def fetch_data(req_time):
 	params = {
@@ -22,7 +22,7 @@ def fetch_data(req_time):
 
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		TWSE_HOST + '/exchangeReport/MI_MARGN?' + params
+		HOST + '/exchangeReport/MI_MARGN?' + params
 	)
 
 	try:

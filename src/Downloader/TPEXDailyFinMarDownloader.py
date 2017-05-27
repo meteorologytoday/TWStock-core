@@ -8,21 +8,20 @@ from socket import timeout
 from FinMarShare import *
 import TimeFuncs
 
-TWSE_HOST = "http://www.twse.com.tw"
-cvs_data_cols = ['no', 'stockname', 'fin_b', 'fin_s', 'fin_r', 'fin_pb', 'fin_cb', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pb', 'mar_cb', 'mar_l', 'day_trade', 'note']
+HOST = "http://www.tpex.org.tw"
+cvs_data_cols = ['no', 'stockname', 'fin_pbal', 'fin_b', 'fin_s', 'fin_r', 'fin_cbal', 'fin_capcer', 'fin_usage', 'fin_l', 'mar_pbal', 'mar_s', 'mar_b', 'mar_r', 'mar_cbal', 'mar_capcer', 'mar_usage', 'mar_l', 'day_trade', 'note']
 
-float_data = ['fin_b', 'fin_s', 'fin_r', 'fin_pb', 'fin_cb', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pb', 'mar_cb', 'mar_l', 'day_trade']
+float_data = ['fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_l', 'day_trade']
 
 def fetch_data(req_time):
 	params = {
-		'response'    : 'csv',
-		'date'        : req_time.strftime("%Y%m%d"),
-		'selectType'  : 'ALL'
+		'l'   : 'zh-tw',
+		'd'   : "%d/%02d/%02d" % (req_time.year-1911, req_time.month, req_time.day),
+		's'   : '0,asc,1'
 	}
-
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		TWSE_HOST + '/exchangeReport/MI_MARGN?' + params
+		HOST + '/web/stock/margin_trading/margin_balance/margin_bal_download.php?' + params
 	)
 
 	try:
@@ -66,7 +65,7 @@ def parseFile(text):
 	return data
 
 
-class TWSEDailyFinMarDownloader(FinMarDownloader):
+class TPEXDailyFinMarDownloader(FinMarDownloader):
 	def __init__(self, db_fname):
 		super().__init__(db_fname)
 

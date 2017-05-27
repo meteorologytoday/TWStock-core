@@ -8,7 +8,7 @@ cols_desc = [
 	('fin_s',          'REAL'),       # 資賣 (sell)
 	('fin_r',          'REAL'),       # 現償 (repay)
 	('fin_l',          'REAL'),       # 資限額 (limit)
-	('mar_pbal'        'REAL'),       # 前券餘額(股) (previous balance)
+	('mar_pbal',       'REAL'),       # 前券餘額(股) (previous balance)
 	('mar_b',          'REAL'),       # 券買 (buy)
 	('mar_s',          'REAL'),       # 券賣 (sell)
 	('mar_r',          'REAL'),       # 券償 (repay)
