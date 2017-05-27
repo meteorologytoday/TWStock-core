@@ -21,7 +21,18 @@ all_fields = [
 	'dealer_self_i',
 	'dealer_self_o',
 	'dealer_hedge_i',
-	'dealer_hedge_o'
+	'dealer_hedge_o',
+	'fin_pb',
+	'fin_b',
+	'fin_s',
+	'fin_r',
+	'fin_l',
+	'mar_pb',
+	'mar_b',
+	'mar_w',
+	'mar_r',
+	'mar_l',
+	'day_trade',
 ]
 
 data_fields = all_fields[1:]

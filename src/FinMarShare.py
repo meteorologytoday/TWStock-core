@@ -3,12 +3,12 @@ cols_desc = [
 	('id',             'INTEGER PRIMARY KEY AUTOINCREMENT'),
 	('no',             'TEXT'),       # 股票代號
 	('date',           'INTEGER'),    # 時間
-	('fin_pb',         'REAL'),       # 前資餘額(股) (previous balance)
+	('fin_pbal',       'REAL'),       # 前資餘額(股) (previous balance)
 	('fin_b',          'REAL'),       # 資買 (buy)
 	('fin_s',          'REAL'),       # 資賣 (sell)
 	('fin_r',          'REAL'),       # 現償 (repay)
 	('fin_l',          'REAL'),       # 資限額 (limit)
-	('mar_pb',         'REAL'),       # 前券餘額(股) (previous balance)
+	('mar_pbal'        'REAL'),       # 前券餘額(股) (previous balance)
 	('mar_b',          'REAL'),       # 券買 (buy)
 	('mar_s',          'REAL'),       # 券賣 (sell)
 	('mar_r',          'REAL'),       # 券償 (repay)
