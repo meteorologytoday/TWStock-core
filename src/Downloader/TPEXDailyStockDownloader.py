@@ -65,7 +65,7 @@ def parseFile(text):
 			row['change_spread'] = row['change_spread'].replace('X', '')
 
 			ex_div_right = False
-			if row['change_spread'] in ['除息', '除權']:
+			if row['change_spread'] in ['除息', '除權', '除權息']:
 				row['change_spread'] = '0'
 				ex_div_right = True
 
