@@ -1,24 +1,27 @@
 # TWStock
-台灣股票抓取程式，作者XTT
+台灣股票抓取程式，作者XTT。
 
 # 相依性
-- Python3.4+, sqlite3 (pip package)
+- Python3.4+
+- Pip: sqlite3, Numpy, Matplotlib (optinal)
 - Bash shell (可視需要自行修改)
 
 # 初始設定操作順序
-[環境設置] -> [掃描股市] -> [抓取資料] -> [排列整理] -> [檔案後續分析]
+[環境設置] -> [掃描股市名稱] -> [抓取資料] -> [排列整理] -> [檔案後續分析]
 
 # 環境設置
     > . setup.sh    # 純粹將src納入搜尋路徑
 
-# 掃描股市
+# 掃描股市名稱
     > ./scan.sh
 
 # 抓取資料
-    > ./script/download_foreground.sh  # 前景抓取
-    > ./script/download.sh             # 背景抓取
+    > ./script/routine.sh 2               # 抓取兩天的股市資料至STOCK.db
+    > ./script/routine.sh                 # 若無參數，預設抓取2個月的資料到STOCK.db
 
 # 排列整理
+    > # 將資料整理成一個一個Binary檔，依照股票編號輸出至data資料夾
+    > # 另外也內插成「每日」資料(變成等時距)，存放至interp_data。科學分析可能較有需求
     > python3 src/reorder_data.py --database=STOCK.db
 
 # 檔案後續分析
@@ -42,3 +45,23 @@
 15. 自營商賣出股數(自行買賣)
 16. 自營商買進股數(避險)
 17. 自營商賣出股數(避險)
+18. 前資餘額
+19. 資買
+20. 資賣
+21. 現償
+22. 融資限額
+23. 前資餘額
+24. 資買
+25. 資賣
+26. 現償
+27. 融資限額
+28. 當日交易(當沖)
+
+# 資料夾結構
+- data/        : 存放各股票的Binary資料檔
+- interp_data/ : 存放各股票的Binary資料檔(內插成等時距)
+- targets/     : 存放股票編號的清單
+- src/         : 程式碼原始檔
+- tools/       : 分析股票工具
+- test/        : 測試程式碼
+- web/         : (開發中) 網頁GUI，預計做成網頁介面控制
