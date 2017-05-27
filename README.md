@@ -1,9 +1,6 @@
 # TWStock
 台灣股票抓取程式，作者XTT。
 
-# 已知問題
-- 2017/05/24 發現證交所與證券櫃檯買賣中心之資料抓取連結異動，正在修復中。(dev/fix-download-src)
-
 # 相依性
 - Python3.4+
 - Pip: sqlite3, Numpy, Matplotlib (optinal)
@@ -19,8 +16,8 @@
     > ./scan.sh
 
 # 抓取資料
-    > ./script/download.sh                # 若無參數，預設抓取2個月的資料到STOCK.db
-    > ./script/download.sh 12             # 抓取從今天往回推12個月資料，資料都會下載到STOCK.db
+    > ./script/routine.sh 2               # 抓取兩天的股市資料至STOCK.db
+    > ./script/routine.sh                 # 若無參數，預設抓取2個月的資料到STOCK.db
 
 # 排列整理
     > # 將資料整理成一個一個Binary檔，依照股票編號輸出至data資料夾
@@ -48,6 +45,17 @@
 15. 自營商賣出股數(自行買賣)
 16. 自營商買進股數(避險)
 17. 自營商賣出股數(避險)
+18. 前資餘額
+19. 資買
+20. 資賣
+21. 現償
+22. 融資限額
+23. 前資餘額
+24. 資買
+25. 資賣
+26. 現償
+27. 融資限額
+28. 當日交易(當沖)
 
 # 資料夾結構
 - data/        : 存放各股票的Binary資料檔
