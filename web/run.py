@@ -1,4 +1,4 @@
-from bottle import route, run, static_file, template, abort, response
+from bottle import route, run, static_file, template, abort, response, request
 import os, json
 from helper import status
 
@@ -23,11 +23,20 @@ def query_stock():
 	return template('query_stock')
 
 @route('/query_stock/engine')
-	import QueryStock as qs
-	from datetime import date
-	no = response.forms.get('no')
-	beg_date = date.strptime(response.forms.get('beg_date'), '%Y-%m-%d')
-	end_date = date.strptime(response.forms.get('end_date'), '%Y-%m-%d')
+def query_stock_engine():
+	import app.query_stock as qs
+	from datetime import datetime
+	print(request.query.beg_date)
+
+	try:
+		no = request.query.no
+		beg_date = datetime.strptime(request.query.beg_date, '%Y-%m-%d')
+		end_date = datetime.strptime(request.query.end_date, '%Y-%m-%d')
+	except Exception as e:
+		print(str(e))
+		abort(404)
+
+	print(no, beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d"))
 
 	try:
 		data = qs.query(no, beg_date, end_date, TWStock_root + '/data')

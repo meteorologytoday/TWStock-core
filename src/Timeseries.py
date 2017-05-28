@@ -10,6 +10,12 @@ class Timeseries(MathFuncs.mixAnalysis, object):
 		self.d = {}
 		self.dtype = dtype
 
+	def __iter__(self):
+		for key in self.d.keys():
+			yield(key, self.d[key].tolist())
+
+		yield ('time', self.time.tolist())
+
 	def add(self, key, arr):
 		if len(arr) != len(self.time):
 			raise Error("Length of timeseries must be equal. (input: %d, it should be %d)" % (len(arr), len(self.time)))
