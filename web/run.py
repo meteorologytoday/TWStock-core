@@ -18,6 +18,24 @@ def server_static(filename):
 def analysis01():
 	return template('analysis01')
 
+@route('/query_stock')
+def query_stock():
+	return template('query_stock')
+
+@route('/query_stock/engine')
+	import QueryStock as qs
+	from datetime import date
+	no = response.forms.get('no')
+	beg_date = date.strptime(response.forms.get('beg_date'), '%Y-%m-%d')
+	end_date = date.strptime(response.forms.get('end_date'), '%Y-%m-%d')
+
+	try:
+		data = qs.query(no, beg_date, end_date, TWStock_root + '/data')
+	except Exception as e:
+		return {'error': str(e)}
+
+	return dict(data)
+
 @route('/control_panel')
 def control_panel():
 	return template('control_panel')

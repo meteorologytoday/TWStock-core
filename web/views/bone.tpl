@@ -38,6 +38,7 @@
             <li class="active"><a href="/">狀態</a></li>
             <li><a href="/analysis01">篩選</a></li>
             <li><a href="/control_panel">控制板</a></li>
+            <li><a href="/query_stock">查詢</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
