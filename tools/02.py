@@ -15,10 +15,7 @@ for (no, data) in data_iterator('data'):
 		continue
 
 	data.genAnalysis()
-	sig_crx3 = (MathFuncs.findCrx(data.d['dif'], data.d['macd'], 3) == 1).any()
-	sig_foreign_buy3 = ((data.d['foreign_i'][-3:] - data.d['foreign_o'][-3:]) > 10000).all()
-
-
+	
 	if sig_crx3 and sig_foreign_buy3:
 		candidates.append([no, data.d['c_p'][-1]])
 
