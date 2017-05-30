@@ -1,8 +1,9 @@
-import sys, getopt
+import sys, getopt, os
 from datetime import datetime, timedelta
 import importlib
 
 db_file = "STOCK.db"
+datapath = "."
 days=1
 
 doing = []
@@ -13,7 +14,7 @@ beg_t = now.timestamp()
 
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "TWSE", "TPEX", "stock", "bizcorp", "finmar", "days="])
+	opts, args = getopt.getopt(sys.argv[1:], "", ["datapath=", "database=", "TWSE", "TPEX", "stock", "bizcorp", "finmar", "days="])
 except getopt.GetoptError as err:
 	print(err)
 	sys.exit(2)
@@ -21,6 +22,8 @@ except getopt.GetoptError as err:
 for o, a in opts:
 	if o == "--database":
 		db_file = a
+	elif o == "--datapath":
+		datapath = a
 	elif o == "--TWSE":
 		doing.append('TWSE')
 	elif o == "--TPEX":
@@ -36,7 +39,8 @@ for o, a in opts:
 
 download_beg_t = now - timedelta(days)
 
-print("DATABASE   file: %s" % (db_file,))
+print("DATABASE file: %s" % (db_file,))
+print("DATABASE path: %s" % (os.path.abspath(datapath),))
 print("Doing? %s" % ', '.join(doing))
 print("Getting? %s" % ', '.join(getting))
 
@@ -45,7 +49,7 @@ for prefix in doing:
 		
 		cls_str = '%sDaily%sDownloader' % (prefix, data_type) 
 		cls = getattr(importlib.import_module('Downloader.%s' % (cls_str,)), cls_str)
-		with cls(db_file) as handler:
+		with cls("%s/%s" % (datapath, db_file)) as handler:
 			handler.download(download_beg_t, now)
 
 print("下載完成！")

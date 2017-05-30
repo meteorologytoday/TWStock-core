@@ -8,11 +8,34 @@ import sqlite3
 from Timeseries import Timeseries
 import os
 
-if not os.path.isdir('data'):
-	os.mkdir('data')
+db_file = "STOCK.db"
+datapath = os.path.abspath(".")
 
-if not os.path.isdir('interp_data'):
-	os.mkdir('interp_data')
+
+try:
+	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "datapath="])
+except getopt.GetoptError as err:
+	print(err)
+	sys.exit(2)
+
+for o, a in opts:
+	if o == "--database":
+		db_file = a
+	elif o == "--datapath":
+		datapath = a
+
+
+print("DB file   : %s" % (db_file,))
+print("Data path : %s" % (datapath,))
+
+data_folder = "%s/%s" % (datapath, 'data')
+interp_data_folder = "%s/%s" % (datapath, 'interp_data')
+
+if not os.path.isdir(data_folder):
+	os.mkdir(data_folder)
+
+if not os.path.isdir(interp_data_folder):
+	os.mkdir(interp_data_folder)
 
 
 
@@ -32,7 +55,7 @@ def deducePrevStock(data, idx_pivot, prev_cnt):
 
 
 
-db_file = None
+
 
 get_count_cmd = '''SELECT s.no, count(s.no) FROM ''' + stock_table_name + ''' AS s LEFT OUTER JOIN ''' + bizcorp_table_name + ''' AS b ON ( s.no = b.no AND s.date = b.date ) LEFT OUTER JOIN ''' + finmar_table_name + ''' AS f ON ( s.no = f.no AND s.date = f.date ) GROUP BY s.no ORDER BY s.no ASC;'''
 
@@ -41,23 +64,10 @@ get_data_cmd = '''SELECT s.date, s.vol, s.turnover, s.o_p, s.h_p, s.l_p, s.c_p, 
 
 fill_zeros = ['vol', 'turnover', 'change_spread', 'count', 'foreign_i', 'foreign_o', 'trust_i', 'trust_o', 'dealer_self_i', 'dealer_self_o', 'dealer_hedge_i', 'dealer_hedge_o']
 
-try:
-	opts, args = getopt.getopt(sys.argv[1:], "", ["database="])
-except getopt.GetoptError as err:
-	print(err)
-	sys.exit(2)
-
-for o, a in opts:
-	if o == "--database":
-		db_file = a
-
-if db_file is None:
-	print("Must give paramter --database")
-	sys.exit(2)
-
 stocks = {}
-print("正在從%s讀取資訊..." % (db_file,), end='')
-c = sqlite3.connect(db_file)
+fname = "%s/%s" % (datapath, db_file)
+print("正在從%s讀取資訊..." % (fname,), end='')
+c = sqlite3.connect(fname)
 data = list(zip(* c.execute(get_data_cmd).fetchall()))
 no_count = c.execute(get_count_cmd).fetchall()
 c.close()
@@ -105,12 +115,12 @@ for i, (no, cnt) in enumerate(no_count):
 	for key in stock.d:
 		new_stock.add(key, np.interp(new_time, stock.time, stock.d[key]))
 
-	fname = "interp_data/%s.bin" % (no,)
+	fname = "%s/%s.bin" % (interp_data_folder,no)
 	print("正在寫入%s... " % (fname,), end='')
 	new_stock.printBinary(fname, keys=BinaryData.data_fields)
 	print("完成。")
 	
-	fname = "data/%s.bin" % (no,)
+	fname = "%s/%s.bin" % (data_folder, no)
 	print("正在寫入%s... " % (fname,), end='')
 	stock.printBinary(fname, keys=BinaryData.data_fields)
 	print("完成。")
