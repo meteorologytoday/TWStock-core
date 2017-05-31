@@ -7,22 +7,27 @@
 - Bash shell (可視需要自行修改)
 
 # 初始設定操作順序
-[環境設置] -> [掃描股市名稱] -> [抓取資料] -> [排列整理] -> [檔案後續分析]
+[抓取資料] -> [排列整理] -> [檔案後續分析]
 
 # 環境設置
-    > . setup.sh    # 純粹將src納入搜尋路徑
+    > git clone https://github.com/meteorologytoday/TWStock-core.git
+    > cd TWStock-core
+    >
+    > # 方法一：安裝至python
+    > sudo python setup.py install
+    >
+    > # 方法二：純粹將src納入搜尋路徑
+    > . setup.sh
+    >
+    > ./script/routine.sh 7  # 抓取資料
 
 # 掃描股市名稱
     > ./scan.sh
 
 # 抓取資料
-    > ./script/routine.sh 2               # 抓取兩天的股市資料至STOCK.db
-    > ./script/routine.sh                 # 若無參數，預設抓取2個月的資料到STOCK.db
-
-# 排列整理
-    > # 將資料整理成一個一個Binary檔，依照股票編號輸出至data資料夾
-    > # 另外也內插成「每日」資料(變成等時距)，存放至interp_data。科學分析可能較有需求
-    > python3 src/reorder_data.py --database=STOCK.db
+	> ./script/routine.sh [抓取天數(預設1天)] [資料庫之資料夾(預設為此專案之根目錄)]
+    > ./script/routine.sh 2                  # 抓取兩天的股市資料至STOCK.db
+    > ./script/routine.sh 20 /path/all_data  # 抓取20天之資料至 /path/all_data 資料夾
 
 # 檔案後續分析
 
