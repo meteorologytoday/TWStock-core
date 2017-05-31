@@ -11,7 +11,6 @@ import os
 db_file = "STOCK.db"
 datapath = os.path.abspath(".")
 
-
 try:
 	opts, args = getopt.getopt(sys.argv[1:], "", ["database=", "datapath="])
 except getopt.GetoptError as err:
