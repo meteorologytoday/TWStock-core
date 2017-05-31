@@ -2,7 +2,7 @@ import sys, getopt
 from TWStock.core.StockShare import table_name as stock_table_name
 from TWStock.core.BizCorpShare import table_name as bizcorp_table_name
 from TWStock.core.FinMarShare import table_name as finmar_table_name
-import TWStock.core.BinaryData
+import TWStock.core.BinaryData as BinaryData
 from TWStock.core.Timeseries import Timeseries
 
 import numpy as np
