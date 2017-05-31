@@ -1,1 +1,1 @@
-__all__ = ['eprint']
+__all__ = ['eprint', 'Iterator']
