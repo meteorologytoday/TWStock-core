@@ -1,7 +1,7 @@
 import sqlite3
-import TWStock.core.BizCorpShare as BizCorpShare
-from TWStock.core.Timeseries import Timeseries
-from TWStock.core.TWSException import *
+import BizCorpShare
+from Timeseries import Timeseries
+from TWSException import *
 
 ins_cmd = 'INSERT OR IGNORE INTO ' + BizCorpShare.table_name + '(' + ','.join(BizCorpShare.ins_cols)+ ') VALUES (:' + ',:'.join(BizCorpShare.ins_cols) + ')'
 sel_cmd = 'SELECT ' + ','.join(BizCorpShare.sel_cols) + ' FROM ' + BizCorpShare.table_name + ' WHERE no = ? ORDER BY date ASC'

@@ -1,12 +1,12 @@
-from StockIO import StockDownloader
+from TWStock.core.StockIO import StockDownloader
+import TWStock.core.TimeFuncs as TimeFuncs
+
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
 from io import StringIO
 import datetime
 from socket import timeout
-from StockShare import *
-import TimeFuncs
 
 HOST = "http://www.twse.com.tw"
 cvs_data_cols = ['no', 'stockname', 'vol', 'count', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'sign', 'change']

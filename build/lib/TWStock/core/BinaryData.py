@@ -1,5 +1,5 @@
 import numpy as np
-from TWStock.core.Timeseries import Timeseries as TS
+from Timeseries import Timeseries as TS
 
 dtype = np.float32
 missing = np.nan

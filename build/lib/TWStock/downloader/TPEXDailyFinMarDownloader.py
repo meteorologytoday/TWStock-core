@@ -1,29 +1,27 @@
-from TWStock.core.FinMarIO import FinMarDownloader
-import TWStock.core.TimeFuncs as TimeFuncs
-
+from FinMarIO import FinMarDownloader
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
 from io import StringIO
 import datetime
 from socket import timeout
+from FinMarShare import *
+import TimeFuncs
 
-
-HOST = "http://www.twse.com.tw"
-cvs_data_cols = ['no', 'stockname', 'fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_cbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_cbal', 'mar_l', 'day_trade', 'note']
+HOST = "http://www.tpex.org.tw"
+cvs_data_cols = ['no', 'stockname', 'fin_pbal', 'fin_b', 'fin_s', 'fin_r', 'fin_cbal', 'fin_capcer', 'fin_usage', 'fin_l', 'mar_pbal', 'mar_s', 'mar_b', 'mar_r', 'mar_cbal', 'mar_capcer', 'mar_usage', 'mar_l', 'day_trade', 'note']
 
 float_data = ['fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_l', 'day_trade']
 
 def fetch_data(req_time):
 	params = {
-		'response'    : 'csv',
-		'date'        : req_time.strftime("%Y%m%d"),
-		'selectType'  : 'ALL'
+		'l'   : 'zh-tw',
+		'd'   : "%d/%02d/%02d" % (req_time.year-1911, req_time.month, req_time.day),
+		's'   : '0,asc,1'
 	}
-
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		HOST + '/exchangeReport/MI_MARGN?' + params
+		HOST + '/web/stock/margin_trading/margin_balance/margin_bal_download.php?' + params
 	)
 
 	try:
@@ -67,17 +65,17 @@ def parseFile(text):
 	return data
 
 
-class TWSEDailyFinMarDownloader(FinMarDownloader):
+class TPEXDailyFinMarDownloader(FinMarDownloader):
 	def __init__(self, db_fname):
 		super().__init__(db_fname)
 
 
 	def download(self, beg_date=datetime.datetime.now(), end_date=datetime.datetime.now()):
 
-		print("收集TWSE融資融券餘額資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
+		print("收集TPEX融資融券餘額資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
 		# iterate over time
 		for today in TimeFuncs.iter_date(beg_date, end_date, include_end=True):
-			print("收集TWSE融資融券餘額資料: %s" % today.strftime("%Y/%m/%d"))
+			print("收集TPEX融資融券餘額資料: %s" % today.strftime("%Y/%m/%d"))
 				
 			err = []
 

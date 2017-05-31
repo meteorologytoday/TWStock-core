@@ -1,6 +1,5 @@
 import numpy as np
-from TWStock.core import MathFuncs
-
+import MathFuncs
 class Timeseries(MathFuncs.mixAnalysis, object):
 	"""
 		Variable [time] is assumed to be ascending.

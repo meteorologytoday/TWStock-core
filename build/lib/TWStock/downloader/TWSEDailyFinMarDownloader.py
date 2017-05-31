@@ -1,13 +1,12 @@
-from TWStock.core.FinMarIO import FinMarDownloader
-import TWStock.core.TimeFuncs as TimeFuncs
-
+from FinMarIO import FinMarDownloader
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
 from io import StringIO
 import datetime
 from socket import timeout
-
+from FinMarShare import *
+import TimeFuncs
 
 HOST = "http://www.twse.com.tw"
 cvs_data_cols = ['no', 'stockname', 'fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_cbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_cbal', 'mar_l', 'day_trade', 'note']

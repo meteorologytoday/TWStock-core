@@ -1,12 +1,12 @@
-from BizCorpIO import BizCorpDownloader
+from TWStock.core.BizCorpIO import BizCorpDownloader
+import TWStock.core.TimeFuncs as TimeFuncs
+
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
 from io import StringIO
 import datetime
 from socket import timeout
-from StockShare import *
-import TimeFuncs
 
 HOST = "http://www.twse.com.tw"
 

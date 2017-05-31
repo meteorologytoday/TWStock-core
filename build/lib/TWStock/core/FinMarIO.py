@@ -1,15 +1,15 @@
 import sqlite3
-import TWStock.core.BizCorpShare as BizCorpShare
-from TWStock.core.Timeseries import Timeseries
-from TWStock.core.TWSException import *
+import FinMarShare
+from Timeseries import Timeseries
+from TWSException import *
 
-ins_cmd = 'INSERT OR IGNORE INTO ' + BizCorpShare.table_name + '(' + ','.join(BizCorpShare.ins_cols)+ ') VALUES (:' + ',:'.join(BizCorpShare.ins_cols) + ')'
-sel_cmd = 'SELECT ' + ','.join(BizCorpShare.sel_cols) + ' FROM ' + BizCorpShare.table_name + ' WHERE no = ? ORDER BY date ASC'
-create_cmd = 'CREATE TABLE IF NOT EXISTS ' + BizCorpShare.table_name \
-	+ ' (' + (','.join(BizCorpShare.create_cols)) \
-	+ ', UNIQUE(' + (','.join(BizCorpShare.uniq)) + ') )'
+ins_cmd = 'INSERT OR IGNORE INTO ' + FinMarShare.table_name + '(' + ','.join(FinMarShare.ins_cols)+ ') VALUES (:' + ',:'.join(FinMarShare.ins_cols) + ')'
+sel_cmd = 'SELECT ' + ','.join(FinMarShare.sel_cols) + ' FROM ' + FinMarShare.table_name + ' WHERE no = ? ORDER BY date ASC'
+create_cmd = 'CREATE TABLE IF NOT EXISTS ' + FinMarShare.table_name \
+	+ ' (' + (','.join(FinMarShare.create_cols)) \
+	+ ', UNIQUE(' + (','.join(FinMarShare.uniq)) + ') )'
 
-class BizCorpDownloader:
+class FinMarDownloader:
 
 	def __init__(self, db_fname):
 		self.db_fname = db_fname
@@ -45,7 +45,7 @@ class BizCorpDownloader:
 		raise NotImplementedError
 
 
-class BizCorpReader:
+class FinMarReader:
 	
 	def __init__(self, db_fname):
 		self.db_fname = db_fname
@@ -70,7 +70,7 @@ class BizCorpReader:
 		tmp = list(zip(* self.dbh.execute(sel_cmd, (no, )).fetchall()))
 		if len(tmp) != 0:
 			result = Timeseries(tmp.pop(0)) # 'date' column
-			for i, key in enumerate(BizCorpShare.sel_cols[1:]):
+			for i, key in enumerate(FinMarShare.sel_cols[1:]):
 				result.add(key, tmp[i])
 			return result
 
@@ -78,5 +78,5 @@ class BizCorpReader:
 			raise NoDataException("No data is available")
 
 	def getListOfNo(self):
-		return list(zip(*self.dbh.execute('SELECT no FROM ' + BizCorpShare.table_name + ' GROUP BY no ORDER BY no ASC').fetchall()))[0]
+		return list(zip(*self.dbh.execute('SELECT no FROM ' + FinMarShare.table_name + ' GROUP BY no ORDER BY no ASC').fetchall()))[0]
 

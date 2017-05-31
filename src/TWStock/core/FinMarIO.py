@@ -1,7 +1,7 @@
 import sqlite3
-import FinMarShare
-from Timeseries import Timeseries
-from TWSException import *
+import TWStock.core.FinMarShare as FinMarShare
+from TWStock.core.Timeseries import Timeseries
+from TWStock.core.TWSException import *
 
 ins_cmd = 'INSERT OR IGNORE INTO ' + FinMarShare.table_name + '(' + ','.join(FinMarShare.ins_cols)+ ') VALUES (:' + ',:'.join(FinMarShare.ins_cols) + ')'
 sel_cmd = 'SELECT ' + ','.join(FinMarShare.sel_cols) + ' FROM ' + FinMarShare.table_name + ' WHERE no = ? ORDER BY date ASC'

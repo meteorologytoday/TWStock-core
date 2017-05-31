@@ -1,29 +1,39 @@
-from TWStock.core.FinMarIO import FinMarDownloader
-import TWStock.core.TimeFuncs as TimeFuncs
-
+from StockIO import StockDownloader
 import urllib.parse
 import urllib.request
 import json, re, sys, os, csv
 from io import StringIO
 import datetime
 from socket import timeout
-
+from StockShare import *
+import TimeFuncs
 
 HOST = "http://www.twse.com.tw"
-cvs_data_cols = ['no', 'stockname', 'fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_cbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_cbal', 'mar_l', 'day_trade', 'note']
+cvs_data_cols = ['no', 'stockname', 'vol', 'count', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'sign', 'change']
 
-float_data = ['fin_b', 'fin_s', 'fin_r', 'fin_pbal', 'fin_l', 'mar_b', 'mar_s', 'mar_r', 'mar_pbal', 'mar_l', 'day_trade']
+float_data = ['vol', 'turnover', 'o_p', 'h_p', 'l_p', 'c_p', 'change_spread', 'count']
 
 def fetch_data(req_time):
+	"""
+		0. 日期
+		1. 成交股數
+		2. 成交金額
+		3. 開盤價
+		4. 最高價
+		5. 最低價
+		6. 收盤價
+		7. 漲跌價差
+		8. 成交筆數
+	"""
 	params = {
 		'response'    : 'csv',
 		'date'        : req_time.strftime("%Y%m%d"),
-		'selectType'  : 'ALL'
+		'type'     : 'ALL'
 	}
 
 	params = urllib.parse.urlencode(params)
 	req = urllib.request.Request(
-		HOST + '/exchangeReport/MI_MARGN?' + params
+		HOST + '/exchangeReport/MI_INDEX?' + params
 	)
 
 	try:
@@ -59,25 +69,35 @@ def parseFile(text):
 			if not stockno_filter.match(row['no']):
 				continue
 				
-			for key in float_data:
-				row[key] = float(row[key].replace(',', ''))
+			fixed = False
+			# 該日無漲跌
+			if missing_data_filter.match(row['o_p']):
+				fixed = True
+	
+			row['change_spread'] = "%s%s" % (row['sign'].replace('X', ''), row['change'])
+			if fixed:
+				for key in float_data:
+					row[key] = None
+			else:
+				for key in float_data:
+					row[key] = float(row[key].replace(',', ''))
 	
 			data.append(row)
 
 	return data
 
 
-class TWSEDailyFinMarDownloader(FinMarDownloader):
+class TWSEDailyStockDownloader(StockDownloader):
 	def __init__(self, db_fname):
 		super().__init__(db_fname)
 
 
 	def download(self, beg_date=datetime.datetime.now(), end_date=datetime.datetime.now()):
 
-		print("收集TWSE融資融券餘額資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
+		print("收集TWSE資料，時間 %s 至 %s" % (beg_date.strftime("%Y/%m/%d"), end_date.strftime("%Y/%m/%d")))
 		# iterate over time
 		for today in TimeFuncs.iter_date(beg_date, end_date, include_end=True):
-			print("收集TWSE融資融券餘額資料: %s" % today.strftime("%Y/%m/%d"))
+			print("收集TWSE資料: %s" % today.strftime("%Y/%m/%d"))
 				
 			err = []
 

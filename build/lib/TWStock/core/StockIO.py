@@ -1,8 +1,7 @@
 import sqlite3
-import TWStock.core.StockShare as StockShare
-from TWStock.core.Timeseries import Timeseries
-from TWStock.core.TWSException import *
-
+import StockShare
+from TWSException import *
+from Timeseries import Timeseries
 
 
 ins_cmd = 'INSERT OR IGNORE INTO stocks(' + ','.join(StockShare.cols)+ ') VALUES (:' + ',:'.join(StockShare.cols) + ')'
