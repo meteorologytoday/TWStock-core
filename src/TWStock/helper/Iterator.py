@@ -1,5 +1,5 @@
 import os, sys, re
-import BinaryData
+import TWStock.core.BinaryData as BinaryData
 
 def data_iterator(dir_path='data'):
 	parser = re.compile(r'(\d+)\.bin')
