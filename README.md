@@ -21,9 +21,6 @@
     >
     > ./script/routine.sh 7  # 抓取資料
 
-# 掃描股市名稱
-    > ./scan.sh
-
 # 抓取資料
 	> ./script/routine.sh [抓取天數(預設1天)] [資料庫之資料夾(預設為此專案之根目錄)]
     > ./script/routine.sh 2                  # 抓取兩天的股市資料至STOCK.db
