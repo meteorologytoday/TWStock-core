@@ -48,7 +48,7 @@ for prefix in doing:
 	for data_type in getting:
 		
 		cls_str = '%sDaily%sDownloader' % (prefix, data_type) 
-		cls = getattr(importlib.import_module('Downloader.%s' % (cls_str,)), cls_str)
+		cls = getattr(importlib.import_module('TWStock.downloader.%s' % (cls_str,)), cls_str)
 		with cls("%s/%s" % (datapath, db_file)) as handler:
 			handler.download(download_beg_t, now)
 
