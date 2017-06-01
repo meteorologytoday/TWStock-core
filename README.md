@@ -26,6 +26,11 @@
     > ./script/routine.sh 2                  # 抓取兩天的股市資料至STOCK.db
     > ./script/routine.sh 20 /path/all_data  # 抓取20天之資料至 /path/all_data 資料夾
 
+# 掃描股票名稱
+    > # 在python shell
+    > from TWStock.helper.Names import scanNamesAndSave
+    > scanNamesAndSave("wanted/path/mapping.csv")
+
 # 檔案後續分析
 
 排列整理完畢後，每一檔股票將會依照自己的編號排成一個binary檔案，放在data資料夾。例如：台泥(1101)的檔案為data/1101.bin。Binary為32位元浮點數之排列。排列順序可在src/BinaryData.py裏頭的all_fields查詢到。目前排列為
