@@ -6,6 +6,21 @@ def defaultIterator():
 	for i in range(1, 10):
 		yield '%d' % (i,)
 
+def scanNamesAndSave(filename=None, iterator=None):
+	filename = 'mapping.csv' if filename is None else filename 
+	print("結果將存至%s" % (filename,))
+
+	mapping = scanNames(iterator)
+ 
+	keys = sorted(mapping.keys())
+	with open(filename, 'w') as f:
+		writer = csv.writer(f)
+		for key in keys:
+			writer.writerow([key, mapping[key]])
+	print("作業完成") 
+
+
+
 no_filter = re.compile(r'^\d{4}$')
 def scanNames(iterator=None):
 	global no_filter
@@ -69,17 +84,7 @@ def loadNames(filename):
 			name_table[row['no']] = row['name']
 	return name_table
 
+
 if __name__ == '__main__':
-	fname = 'mapping.csv' if len(sys.argv) < 2 else sys.argv[1]
-	print("結果將存至%s" % (fname,)) 
-
-	mapping = scanNames()
-	keys = sorted(mapping.keys())
-
-	with open(fname, 'w') as f:
-		writer = csv.writer(f)
-		for key in keys:
-			writer.writerow([key, mapping[key]])
-
-		
-	print("作業完成") 
+	pass
+	#scanNames(save=True)	
