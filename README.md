@@ -28,8 +28,13 @@
 
 # 掃描股票名稱
     > # 在python shell
-    > from TWStock.helper.Names import scanNamesAndSave
-    > scanNamesAndSave("wanted/path/mapping.csv")
+    > from TWStock.helper.Names import scanNamesAndSave, loadNames
+    >
+    > scanNamesAndSave("wanted/path/mapping.csv")    # 檔案存至wanted/path/mapping.csv
+    > 
+    > mapping = loadNames('wanted/path/mapping.csv') # 讀取
+    > 
+    > print(mapping['1101'])                         # 台泥
 
 # 檔案後續分析
 
